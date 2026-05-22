@@ -64,7 +64,7 @@ export function WorkflowSection(): React.JSX.Element {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="aurora-card glass flex min-h-[420px] flex-col justify-between rounded-[2rem] p-6"
+            className="aurora-card glass flex min-h-[420px] flex-col justify-between rounded-[2rem] p-6 lg:sticky lg:top-28"
           >
             <div>
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-3xl bg-background/70">

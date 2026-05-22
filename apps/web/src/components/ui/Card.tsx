@@ -1,22 +1,54 @@
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly glass?: boolean;
+  readonly interactive?: boolean;
 }
 
 export function Card({
   className,
   glass = false,
+  interactive = true,
   children,
+  onMouseMove,
+  onMouseLeave,
+  style,
   ...props
 }: CardProps): React.JSX.Element {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [glowPosition, setGlowPosition] = useState<React.CSSProperties>({
+    '--cursor-x': '50%',
+    '--cursor-y': '50%',
+  } as React.CSSProperties);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>): void => {
+    if (interactive && ref.current) {
+      const bounds = ref.current.getBoundingClientRect();
+      setGlowPosition({
+        '--cursor-x': `${event.clientX - bounds.left}px`,
+        '--cursor-y': `${event.clientY - bounds.top}px`,
+      } as React.CSSProperties);
+    }
+    onMouseMove?.(event);
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>): void => {
+    onMouseLeave?.(event);
+  };
+
   return (
     <div
+      ref={ref}
       className={cn(
-        'rounded-xl border border-border bg-card text-card-foreground shadow-sm',
+        'premium-card rounded-xl border border-border bg-card text-card-foreground shadow-sm',
         glass && 'glass',
+        interactive && 'premium-card-interactive',
         className,
       )}
+      style={{ ...glowPosition, ...style }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       {...props}
     >
       {children}

@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { cinematicTransition } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
@@ -14,6 +15,7 @@ export function ProgressBar({
   className,
   color = 'bg-accent',
 }: ProgressBarProps): React.JSX.Element {
+  const shouldReduceMotion = useReducedMotion();
   const clampedValue = Math.min(100, Math.max(0, value));
 
   return (
@@ -34,10 +36,10 @@ export function ProgressBar({
       >
         <motion.div
           className={cn('h-full rounded-full', color)}
-          initial={{ width: 0 }}
+          initial={{ width: shouldReduceMotion ? `${clampedValue}%` : 0 }}
           whileInView={{ width: `${clampedValue}%` }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={cinematicTransition}
         />
       </div>
     </div>

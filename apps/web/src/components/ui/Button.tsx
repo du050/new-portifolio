@@ -1,9 +1,12 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { motion, useReducedMotion, type HTMLMotionProps } from 'framer-motion';
+import { useMagneticMotion } from '@/hooks/use-magnetic-motion';
+import { motionEasing } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+  'premium-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: {
@@ -30,9 +33,10 @@ const buttonVariants = cva(
 );
 
 interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<HTMLMotionProps<'button'>, 'ref'>,
     VariantProps<typeof buttonVariants> {
   readonly asChild?: boolean;
+  readonly magnetic?: boolean;
 }
 
 export function Button({
@@ -40,10 +44,56 @@ export function Button({
   variant,
   size,
   asChild = false,
+  magnetic = true,
+  onMouseMove,
+  onMouseLeave,
+  style,
   ...props
 }: ButtonProps): React.JSX.Element {
-  const Comp = asChild ? Slot : 'button';
+  const shouldReduceMotion = useReducedMotion();
+  const magneticMotion = useMagneticMotion();
+  const classes = cn(buttonVariants({ variant, size, className }));
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    if (magnetic) {
+      magneticMotion.handleMouseMove(event);
+    }
+    onMouseMove?.(event);
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    magneticMotion.handleMouseLeave();
+    onMouseLeave?.(event);
+  };
+
+  if (asChild) {
+    const slotProps = props as React.ComponentPropsWithoutRef<typeof Slot>;
+    return (
+      <Slot
+        className={classes}
+        style={style as React.CSSProperties | undefined}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        {...slotProps}
+      />
+    );
+  }
+
   return (
-    <Comp className={cn(buttonVariants({ variant, size, className }))} {...props} />
+    <motion.button
+      className={classes}
+      style={{
+        x: magnetic && !shouldReduceMotion ? magneticMotion.x : 0,
+        y: magnetic && !shouldReduceMotion ? magneticMotion.y : 0,
+        ...style,
+      }}
+      whileHover={shouldReduceMotion ? undefined : { scale: 1.018 }}
+      whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
+      transition={motionEasing.softSpring}
+      data-cursor="magnetic"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    />
   );
 }

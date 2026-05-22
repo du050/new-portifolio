@@ -7,6 +7,7 @@ const CURSOR_RING_SIZE = 32;
 export function CustomCursor(): React.JSX.Element | null {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
+  const [isMagnetic, setIsMagnetic] = useState<boolean>(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
@@ -32,7 +33,9 @@ export function CustomCursor(): React.JSX.Element | null {
       const isInteractive = Boolean(
         target.closest('a, button, [role="button"], input, textarea, select'),
       );
+      const hasMagneticCursor = Boolean(target.closest('[data-cursor="magnetic"]'));
       setIsHovering(isInteractive);
+      setIsMagnetic(hasMagneticCursor);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -72,7 +75,10 @@ export function CustomCursor(): React.JSX.Element | null {
           translateX: '-50%',
           translateY: '-50%',
         }}
-        animate={{ opacity: isHovering ? 0.6 : 0.3 }}
+        animate={{
+          opacity: isHovering ? 0.6 : 0.3,
+          borderColor: isMagnetic ? 'var(--color-accent)' : 'var(--color-foreground)',
+        }}
         transition={{ duration: 0.2 }}
         aria-hidden="true"
       />

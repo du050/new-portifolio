@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { fadeInUp, staggerContainer } from '@/lib/animations';
+import { fadeInUp, premiumViewport, staggerContainer } from '@/lib/animations';
 import { cn } from '@/lib/utils';
 
 interface AnimatedSectionProps {
@@ -23,7 +23,7 @@ export function AnimatedSection({
       variants={variants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={premiumViewport}
       className={cn('py-24 md:py-32', className)}
     >
       {children}

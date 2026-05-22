@@ -1,4 +1,5 @@
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
+import { AnimatedCounter } from '@/components/motion/AnimatedCounter';
 import { Card, CardContent } from '@/components/ui/Card';
 import type { DashboardMetric } from '@/lib/dashboard-data';
 import { cn } from '@/lib/utils';
@@ -22,7 +23,7 @@ export function DashboardMetricCard({
       <CardContent className="p-4">
         <p className="text-xs font-medium text-zinc-500">{metric.label}</p>
         <p className="mt-2 font-mono text-[22px] font-semibold tracking-tight">
-          {metric.value}
+          <AnimatedCounter value={metric.value} />
         </p>
         <div
           className={cn(

@@ -8,6 +8,8 @@ import {
   Sparkles,
   Terminal,
 } from 'lucide-react';
+import { AnimatedCounter } from '@/components/motion/AnimatedCounter';
+import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { fadeInUp, slideInLeft, slideInRight, staggerContainer } from '@/lib/animations';
@@ -26,18 +28,22 @@ export function HeroSection({ profile, isLoading }: HeroSectionProps): React.JSX
     >
       <div className="gradient-mesh absolute inset-0" aria-hidden="true" />
       <div className="grid-pattern absolute inset-0" aria-hidden="true" />
-      <motion.div
-        className="floating-orb top-28 left-[8%] h-24 w-24 bg-pink-300/40"
-        animate={{ y: [0, -18, 0], rotate: [0, 10, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden="true"
-      />
-      <motion.div
-        className="floating-orb right-[12%] bottom-24 h-32 w-32 bg-violet-300/30"
-        animate={{ y: [0, 16, 0], x: [0, -10, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden="true"
-      />
+      <ParallaxLayer className="floating-orb top-28 left-[8%] h-24 w-24 bg-pink-300/40" offset={34}>
+        <motion.div
+          className="h-full w-full rounded-full"
+          animate={{ y: [0, -18, 0], rotate: [0, 10, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden="true"
+        />
+      </ParallaxLayer>
+      <ParallaxLayer className="floating-orb right-[12%] bottom-24 h-32 w-32 bg-violet-300/30" offset={56}>
+        <motion.div
+          className="h-full w-full rounded-full"
+          animate={{ y: [0, 16, 0], x: [0, -10, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden="true"
+        />
+      </ParallaxLayer>
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
         <motion.div
@@ -71,15 +77,17 @@ export function HeroSection({ profile, isLoading }: HeroSectionProps): React.JSX
                     { label: 'Systems mind', value: 'backend + infra clarity' },
                     { label: 'Delivery style', value: 'calm, polished execution' },
                   ].map((item) => (
-                    <div
+                    <motion.div
                       key={item.label}
+                      whileHover={{ y: -3, scale: 1.015 }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
                       className="rounded-2xl border border-border bg-card/55 p-3 soft-noise"
                     >
                       <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
                         {item.label}
                       </p>
                       <p className="mt-1 text-sm text-muted-foreground">{item.value}</p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3 pt-2">
@@ -172,7 +180,9 @@ function HeroDashboard({ profile, isLoading }: HeroDashboardProps): React.JSX.El
         <div className="mt-4 grid grid-cols-3 gap-2">
           {metrics.map((metric) => (
             <div key={metric.label} className="rounded-2xl bg-muted/50 p-3">
-              <p className="font-mono text-lg font-bold">{metric.value}</p>
+              <p className="font-mono text-lg font-bold">
+                <AnimatedCounter value={metric.value} />
+              </p>
               <p className="text-[10px] text-muted-foreground">{metric.label}</p>
             </div>
           ))}
