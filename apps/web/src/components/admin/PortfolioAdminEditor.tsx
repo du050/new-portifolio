@@ -1,6 +1,6 @@
 import type { PortfolioContent } from '@portfolio/shared';
 import { CloudUpload, ShieldAlert } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { useAdminAutoSave } from '@/hooks/use-admin-auto-save';
 import { ApiClientError, fetchAuthApi } from '@/lib/api-client';
@@ -22,6 +22,8 @@ type AdminTab =
   | 'experience'
   | 'certifications'
   | 'learning';
+
+const LIVE_PREVIEW_DEBOUNCE_MS = 300;
 
 const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
   { id: 'profile', label: 'Profile' },
@@ -72,30 +74,54 @@ export function PortfolioAdminEditor({
   const [isSavingManual, setIsSavingManual] = useState(false);
 
   const publishContent = usePortfolioStore((state) => state.publishContent);
+  const contentRef = useRef<PortfolioContent | null>(null);
+  const previewDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleContentSaved = useCallback(
+  contentRef.current = content;
+
+  const getContent = useCallback((): PortfolioContent | null => contentRef.current, []);
+
+  const handlePersisted = useCallback(
     (updated: PortfolioContent): void => {
-      const normalized = normalizePortfolioContent(updated);
-      setContent(structuredClone(normalized));
-      publishContent(normalized);
+      publishContent(normalizePortfolioContent(updated));
     },
     [publishContent],
   );
 
-  const { status: saveStatus, statusMessage, saveNow } = useAdminAutoSave({
-    content,
-    isEnabled: canEditPortfolio,
-    onSaved: handleContentSaved,
-  });
+  const { status: saveStatus, statusMessage, saveNow, notifyLocalEdit, resetBaseline } =
+    useAdminAutoSave({
+      isEnabled: canEditPortfolio,
+      getContent,
+      onPersisted: handlePersisted,
+    });
 
   const handleContentChange = useCallback(
     (next: PortfolioContent): void => {
-      const normalized = normalizePortfolioContent(next);
-      setContent(structuredClone(normalized));
-      publishContent(normalized);
+      setContent(next);
+      notifyLocalEdit();
+
+      if (previewDebounceRef.current) {
+        clearTimeout(previewDebounceRef.current);
+      }
+
+      previewDebounceRef.current = setTimeout(() => {
+        previewDebounceRef.current = null;
+        const draft = contentRef.current;
+        if (draft) {
+          publishContent(normalizePortfolioContent(draft));
+        }
+      }, LIVE_PREVIEW_DEBOUNCE_MS);
     },
-    [publishContent],
+    [notifyLocalEdit, publishContent],
   );
+
+  useEffect(() => {
+    return () => {
+      if (previewDebounceRef.current) {
+        clearTimeout(previewDebounceRef.current);
+      }
+    };
+  }, []);
 
   const loadContent = useCallback(async (): Promise<void> => {
     setIsLoading(true);
@@ -106,6 +132,7 @@ export function PortfolioAdminEditor({
       const normalized = normalizePortfolioContent(portfolio);
       setContent(structuredClone(normalized));
       publishContent(normalized);
+      resetBaseline(normalized);
     } catch (error) {
       const message =
         error instanceof ApiClientError
@@ -115,6 +142,7 @@ export function PortfolioAdminEditor({
       if (cached) {
         const normalized = normalizePortfolioContent(cached);
         setContent(structuredClone(normalized));
+        resetBaseline(normalized);
         setHasError(false);
         setLoadErrorMessage(`Showing cached content. ${message}`);
       } else {
@@ -125,7 +153,7 @@ export function PortfolioAdminEditor({
     } finally {
       setIsLoading(false);
     }
-  }, [publishContent]);
+  }, [publishContent, resetBaseline]);
 
   useEffect(() => {
     void loadContent();
