@@ -85,7 +85,8 @@ export function AdminSignInCard({
             Admin access
           </h2>
           <p className={cn('text-sm', isEnterprise ? 'text-zinc-500' : 'text-zinc-400')}>
-            RBAC demo — Standard and Admin are read-only in this panel
+            Standard and Admin are read-only. Owner Super Admin uses your private credentials from{' '}
+            <code className="text-xs">apps/api/.env</code> only.
           </p>
         </div>
       </div>
@@ -126,7 +127,7 @@ export function AdminSignInCard({
 
       <form className="space-y-4 border-t border-zinc-200 pt-5 dark:border-zinc-800" onSubmit={(event) => void handleSubmit(event)}>
         <p className={cn('text-xs font-medium uppercase tracking-wide', isEnterprise ? 'text-zinc-500' : 'text-zinc-400')}>
-          Manual sign-in
+          Owner sign-in (Super Admin)
         </p>
         <label className="block space-y-1.5">
           <span className={cn('text-xs font-medium uppercase tracking-wide', isEnterprise ? 'text-zinc-500' : 'text-zinc-400')}>
@@ -136,7 +137,7 @@ export function AdminSignInCard({
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="viewer@portfolio.dev"
+            placeholder="owner@portfolio.dev"
             className={cn(
               'w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-indigo-500',
               isEnterprise
@@ -166,6 +167,11 @@ export function AdminSignInCard({
             {errorMessage}
           </p>
         ) : null}
+        <p className={cn('text-xs', isEnterprise ? 'text-zinc-500' : 'text-zinc-500')}>
+          Default owner (set in <code className="text-[11px]">apps/api/.env</code>):{' '}
+          <strong>owner@portfolio.dev</strong> / <strong>OwnerChangeMe123!</strong> — change the env
+          values, restart the API, then sign in here.
+        </p>
         <Button type="submit" variant="accent" className="w-full sm:w-auto" disabled={isLoading}>
           {isLoading && !loadingRole ? 'Signing in…' : 'Sign in'}
         </Button>

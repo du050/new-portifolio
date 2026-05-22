@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async login(dto: LoginDto): Promise<LoginResponse> {
-    const account = await this.usersService.findByEmail(dto.email);
+    const account = await this.usersService.findByEmail(dto.email.trim());
     if (!account?.isActive) {
       throw new UnauthorizedException('Invalid email or password');
     }

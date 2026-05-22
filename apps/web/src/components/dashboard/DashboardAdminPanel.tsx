@@ -19,7 +19,7 @@ export function DashboardAdminPanel(): React.JSX.Element {
     <div className="space-y-6">
       <DashboardPageHeader
         tabId="admin"
-        description="View portfolio showcase data with Standard or Admin roles. Super Admin quick sign-in stays disabled; use manual sign-in only when needed."
+        description="Edit variable names and values (skills, metrics, slugs). Only your owner Super Admin account from server .env can save; Standard and Admin are read-only."
       />
 
       {!accessToken ? (

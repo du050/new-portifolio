@@ -5,17 +5,20 @@ import { Button } from '@/components/ui/Button';
 import { fetchAuthApi, putAuthApi } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth-store';
 import { cn } from '@/lib/utils';
-import { AdminField } from './admin-field';
+import { PortfolioAdminCertificationsSection } from './sections/portfolio-admin-certifications-section';
+import { PortfolioAdminExperienceSection } from './sections/portfolio-admin-experience-section';
+import { PortfolioAdminLearningSection } from './sections/portfolio-admin-learning-section';
+import { PortfolioAdminProfileSection } from './sections/portfolio-admin-profile-section';
+import { PortfolioAdminProjectsSection } from './sections/portfolio-admin-projects-section';
+import { PortfolioAdminSkillsSection } from './sections/portfolio-admin-skills-section';
 
-interface PortfolioAdminEditorProps {
-  readonly variant?: 'standalone' | 'enterprise';
-}
-
-export function PortfolioAdminEditor({
-  variant = 'enterprise',
-}: PortfolioAdminEditorProps): React.JSX.Element {
-
-type AdminTab = 'profile' | 'skills' | 'projects' | 'experience' | 'certifications' | 'learning';
+type AdminTab =
+  | 'profile'
+  | 'skills'
+  | 'projects'
+  | 'experience'
+  | 'certifications'
+  | 'learning';
 
 const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
   { id: 'profile', label: 'Profile' },
@@ -26,6 +29,13 @@ const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
   { id: 'learning', label: 'Learning' },
 ] as const;
 
+interface PortfolioAdminEditorProps {
+  readonly variant?: 'standalone' | 'enterprise';
+}
+
+export function PortfolioAdminEditor({
+  variant = 'enterprise',
+}: PortfolioAdminEditorProps): React.JSX.Element {
   const isEnterprise = variant === 'enterprise';
   const canEditPortfolio = useAuthStore((state) => state.canEditPortfolio);
   const user = useAuthStore((state) => state.user);
@@ -65,7 +75,7 @@ const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
         { content },
       );
       setContent(structuredClone(updated));
-      setStatusMessage('Portfolio content saved. Public site will reflect changes on refresh.');
+      setStatusMessage('Saved. Refresh the public site to see updates.');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Save failed';
       setStatusMessage(message);
@@ -87,6 +97,13 @@ const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
   }
 
   const isReadOnly = !canEditPortfolio;
+  const sectionProps = {
+    content,
+    isReadOnly,
+    canEditStructure: canEditPortfolio,
+    variant,
+    onChange: setContent,
+  };
 
   return (
     <div className="space-y-6">
@@ -101,27 +118,37 @@ const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
         >
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
-            Signed in as <strong>{user?.role ?? 'user'}</strong> — view-only access. Standard and
-            Admin roles can read this panel; only Super Admin can edit and save.
+            Signed in as <strong>{user?.role ?? 'user'}</strong> — read-only. Use the tabs below to
+            preview each section.
           </p>
         </div>
-      ) : null}
+      ) : (
+        <p className={cn('text-sm', isEnterprise ? 'text-zinc-600 dark:text-zinc-400' : 'text-zinc-400')}>
+          Each tab covers one part of the portfolio. Edit variable names and values, then save once.
+        </p>
+      )}
 
-      <div className="flex flex-wrap gap-2">
+      <div
+        className="flex flex-wrap gap-2 border-b border-zinc-200 pb-3 dark:border-zinc-800"
+        role="tablist"
+        aria-label="Portfolio content sections"
+      >
         {ADMIN_TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
+            role="tab"
+            aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'rounded-lg px-3 py-1.5 text-sm transition-colors',
+              'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
               activeTab === tab.id
                 ? isEnterprise
                   ? 'bg-indigo-600 text-white'
                   : 'bg-violet-600 text-white'
                 : isEnterprise
-                  ? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
-                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700',
+                  ? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300'
+                  : 'bg-zinc-800 text-zinc-300',
             )}
           >
             {tab.label}
@@ -129,295 +156,16 @@ const ADMIN_TABS: readonly { id: AdminTab; label: string }[] = [
         ))}
       </div>
 
-      {activeTab === 'profile' ? (
-        <section className="grid gap-4 md:grid-cols-2">
-          <AdminField
-            label="Name"
-            value={content.profile.name}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, name: value } })
-            }
-          />
-          <AdminField
-            label="Title"
-            value={content.profile.title}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, title: value } })
-            }
-          />
-          <AdminField
-            label="Headline"
-            value={content.profile.headline}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, headline: value } })
-            }
-          />
-          <AdminField
-            label="Location"
-            value={content.profile.location}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, location: value } })
-            }
-          />
-          <AdminField
-            label="Email"
-            type="email"
-            value={content.profile.email}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, email: value } })
-            }
-          />
-          <AdminField
-            label="Bio"
-            multiline
-            value={content.profile.bio}
-            isReadOnly={isReadOnly}
-            variant={variant}
-            onChange={(value) =>
-              setContent({ ...content, profile: { ...content.profile, bio: value } })
-            }
-          />
-        </section>
-      ) : null}
-
-      {activeTab === 'skills' ? (
-        <section className="space-y-6">
-          {content.skillCategories.map((category, categoryIndex) => (
-            <div
-              key={category.id}
-              className={cn(
-                'rounded-xl border p-4',
-                isEnterprise
-                  ? 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
-                  : 'border-zinc-800',
-              )}
-            >
-              <h3
-                className={cn(
-                  'mb-3 font-medium',
-                  isEnterprise ? 'text-zinc-900 dark:text-zinc-100' : 'text-white',
-                )}
-              >
-                {category.name}
-              </h3>
-              <div className="grid gap-3 md:grid-cols-2">
-                {category.skills.map((skill, skillIndex) => (
-                  <AdminField
-                    key={`${category.id}-${skill.name}`}
-                    label={`${skill.name} level (%)`}
-                    type="number"
-                    value={skill.level}
-                    isReadOnly={isReadOnly}
-                    variant={variant}
-                    onChange={(value) => {
-                      const nextCategories = [...content.skillCategories];
-                      const nextCategory = { ...category, skills: [...category.skills] };
-                      nextCategory.skills[skillIndex] = {
-                        ...skill,
-                        level: Number(value) || 0,
-                      };
-                      nextCategories[categoryIndex] = nextCategory;
-                      setContent({ ...content, skillCategories: nextCategories });
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-      ) : null}
-
-      {activeTab === 'projects' ? (
-        <section className="space-y-6">
-          {content.projects.map((project, projectIndex) => (
-            <div
-              key={project.id}
-              className={cn(
-                'rounded-xl border p-4',
-                isEnterprise
-                  ? 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
-                  : 'border-zinc-800',
-              )}
-            >
-              <h3
-                className={cn(
-                  'mb-3 font-medium',
-                  isEnterprise ? 'text-zinc-900 dark:text-zinc-100' : 'text-white',
-                )}
-              >
-                {project.title}
-              </h3>
-              <AdminField
-                label="Short description"
-                multiline
-                value={project.description}
-                isReadOnly={isReadOnly}
-                variant={variant}
-                onChange={(value) => {
-                  const nextProjects = [...content.projects];
-                  nextProjects[projectIndex] = { ...project, description: value };
-                  setContent({ ...content, projects: nextProjects });
-                }}
-              />
-              <div className="mt-3 grid gap-3 md:grid-cols-2">
-                {project.metrics.map((metric, metricIndex) => (
-                  <div key={`${project.id}-${metric.label}`} className="space-y-2">
-                    <AdminField
-                      label={`${metric.label} value`}
-                      value={metric.value}
-                      isReadOnly={isReadOnly}
-                      onChange={(value) => {
-                        const nextProjects = [...content.projects];
-                        const nextMetrics = [...project.metrics];
-                        nextMetrics[metricIndex] = { ...metric, value };
-                        nextProjects[projectIndex] = { ...project, metrics: nextMetrics };
-                        setContent({ ...content, projects: nextProjects });
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-      ) : null}
-
-      {activeTab === 'experience' ? (
-        <section className="space-y-6">
-          {content.experiences.map((experience, index) => (
-            <div
-              key={experience.id}
-              className={cn(
-                'rounded-xl border p-4',
-                isEnterprise
-                  ? 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
-                  : 'border-zinc-800',
-              )}
-            >
-              <h3
-                className={cn(
-                  'mb-3 font-medium',
-                  isEnterprise ? 'text-zinc-900 dark:text-zinc-100' : 'text-white',
-                )}
-              >
-                {experience.role} @ {experience.company}
-              </h3>
-              <AdminField
-                label="Description"
-                multiline
-                value={experience.description}
-                isReadOnly={isReadOnly}
-                variant={variant}
-                onChange={(value) => {
-                  const next = [...content.experiences];
-                  next[index] = { ...experience, description: value };
-                  setContent({ ...content, experiences: next });
-                }}
-              />
-            </div>
-          ))}
-        </section>
-      ) : null}
-
-      {activeTab === 'certifications' ? (
-        <section className="space-y-6">
-          {content.certifications.map((certification, index) => (
-            <div
-              key={certification.id}
-              className={cn(
-                'rounded-xl border p-4',
-                isEnterprise
-                  ? 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
-                  : 'border-zinc-800',
-              )}
-            >
-              <AdminField
-                label="Name"
-                value={certification.name}
-                isReadOnly={isReadOnly}
-                variant={variant}
-                onChange={(value) => {
-                  const next = [...content.certifications];
-                  next[index] = { ...certification, name: value };
-                  setContent({ ...content, certifications: next });
-                }}
-              />
-              <div className="mt-3">
-                <AdminField
-                  label="Description"
-                  multiline
-                  value={certification.description}
-                  isReadOnly={isReadOnly}
-                  onChange={(value) => {
-                    const next = [...content.certifications];
-                    next[index] = { ...certification, description: value };
-                    setContent({ ...content, certifications: next });
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </section>
-      ) : null}
-
-      {activeTab === 'learning' ? (
-        <section className="space-y-4">
-          {content.learningPaths.map((path, index) => (
-            <div
-              key={path.id}
-              className={cn(
-                'rounded-xl border p-4',
-                isEnterprise
-                  ? 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
-                  : 'border-zinc-800',
-              )}
-            >
-              <h3
-                className={cn(
-                  'mb-3 font-medium',
-                  isEnterprise ? 'text-zinc-900 dark:text-zinc-100' : 'text-white',
-                )}
-              >
-                {path.title}
-              </h3>
-              <AdminField
-                label="Progress (%)"
-                type="number"
-                value={path.progress}
-                isReadOnly={isReadOnly}
-                variant={variant}
-                onChange={(value) => {
-                  const next = [...content.learningPaths];
-                  next[index] = { ...path, progress: Math.min(100, Math.max(0, Number(value) || 0)) };
-                  setContent({ ...content, learningPaths: next });
-                }}
-              />
-              <AdminField
-                label="Description"
-                multiline
-                value={path.description}
-                isReadOnly={isReadOnly}
-                variant={variant}
-                onChange={(value) => {
-                  const next = [...content.learningPaths];
-                  next[index] = { ...path, description: value };
-                  setContent({ ...content, learningPaths: next });
-                }}
-              />
-            </div>
-          ))}
-        </section>
-      ) : null}
+      <div role="tabpanel">
+        {activeTab === 'profile' ? <PortfolioAdminProfileSection {...sectionProps} /> : null}
+        {activeTab === 'skills' ? <PortfolioAdminSkillsSection {...sectionProps} /> : null}
+        {activeTab === 'projects' ? <PortfolioAdminProjectsSection {...sectionProps} /> : null}
+        {activeTab === 'experience' ? <PortfolioAdminExperienceSection {...sectionProps} /> : null}
+        {activeTab === 'certifications' ? (
+          <PortfolioAdminCertificationsSection {...sectionProps} />
+        ) : null}
+        {activeTab === 'learning' ? <PortfolioAdminLearningSection {...sectionProps} /> : null}
+      </div>
 
       <div
         className={cn(

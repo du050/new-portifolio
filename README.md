@@ -123,18 +123,25 @@ Three roles are stored in PostgreSQL (`users` table):
 | `ADMIN` | View (read-only) | No | No |
 | `SUPER_ADMIN` | Full edit | Yes | Yes |
 
-**Standard** and **Admin** have the same permissions (read-only showcase data). Only **Super Admin** can save changes from the UI.
+**Standard** and **Admin** have the same permissions (read-only). Only the **owner Super Admin** (your private account from `.env`) can edit variable names, values, and save.
 
-- Admin UI: http://localhost:5173/admin/login → http://localhost:5173/admin
-- After `npm run db:seed`, demo accounts:
+- Enterprise admin tab: dashboard mode → sidebar **Admin**
+- Demo read-only accounts after seed:
 
 | Email | Password (default) | Role |
 |-------|-------------------|------|
-| `superadmin@portfolio.dev` | `SuperAdmin123!` | Super Admin |
-| `admin@portfolio.dev` | `Admin123!` | Admin |
-| `viewer@portfolio.dev` | `Viewer123!` | Standard |
+| `admin@portfolio.dev` | `Admin123!` | Admin (read-only) |
+| `viewer@portfolio.dev` | `Viewer123!` | Standard (read-only) |
 
-Override seed passwords with `SEED_SUPER_ADMIN_PASSWORD`, `SEED_ADMIN_PASSWORD`, and `SEED_VIEWER_PASSWORD` in `apps/api/.env`.
+**Owner Super Admin** (only you) — set in `apps/api/.env` before seed:
+
+```env
+SEED_SUPER_ADMIN_EMAIL=you@yourdomain.com
+SEED_SUPER_ADMIN_PASSWORD=your-strong-password
+SEED_SUPER_ADMIN_NAME=Your Name
+```
+
+Then `npm run db:seed`. Super Admin is not available from quick-sign-in buttons and cannot be created via the API.
 
 ## Personalization
 
@@ -160,7 +167,9 @@ Environment variables:
 | `CORS_ORIGIN` | API | Allowed frontend origins |
 | `JWT_SECRET` | API | Secret for signing admin JWTs |
 | `JWT_EXPIRES_IN_SECONDS` | API | Token lifetime (default 7 days) |
-| `SEED_SUPER_ADMIN_PASSWORD` | API | Seed password for super admin |
+| `SEED_SUPER_ADMIN_EMAIL` | API | Owner email (only Super Admin account) |
+| `SEED_SUPER_ADMIN_PASSWORD` | API | Owner password |
+| `SEED_SUPER_ADMIN_NAME` | API | Owner display name |
 | `VITE_API_URL` | Web | API base URL |
 
 ## Production Build
