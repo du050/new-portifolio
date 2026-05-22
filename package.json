@@ -1,0 +1,29 @@
+{
+  "name": "developer-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @portfolio/api\" \"npm run dev -w @portfolio/web\"",
+    "dev:web": "npm run dev -w @portfolio/web",
+    "dev:api": "npm run dev -w @portfolio/api",
+    "build": "npm run build -w @portfolio/shared && npm run build -w @portfolio/api && npm run build -w @portfolio/web",
+    "build:shared": "npm run build -w @portfolio/shared",
+    "build:api": "npm run build -w @portfolio/api",
+    "build:web": "npm run build -w @portfolio/web",
+    "lint": "npm run lint -w @portfolio/web",
+    "db:generate": "npm run db:generate -w @portfolio/api",
+    "db:migrate": "npm run db:migrate -w @portfolio/api",
+    "db:seed": "npm run db:seed -w @portfolio/api",
+    "db:push": "npm run db:push -w @portfolio/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
