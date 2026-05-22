@@ -1,7 +1,6 @@
 import type { LearningPath, PortfolioContent } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionCard, AdminStringList } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 

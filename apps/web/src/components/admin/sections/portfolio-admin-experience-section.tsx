@@ -16,7 +16,7 @@ interface PortfolioAdminExperienceSectionProps {
 export function PortfolioAdminExperienceSection({
   content,
   isReadOnly,
-  canEditStructure,
+  canEditStructure: _canEditStructure,
   variant = 'enterprise',
   onChange,
 }: PortfolioAdminExperienceSectionProps): React.JSX.Element {

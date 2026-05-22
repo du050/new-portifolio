@@ -197,7 +197,7 @@ function MetricRow({
   project,
   projectIndex,
   isReadOnly,
-  canEditStructure,
+  canEditStructure: _canEditStructure,
   variant,
   onUpdateProject,
   onAddMetric,

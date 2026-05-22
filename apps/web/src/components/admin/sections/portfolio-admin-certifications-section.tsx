@@ -1,7 +1,6 @@
 import type { Certification, PortfolioContent } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionCard } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 import { cn } from '@/lib/utils';
