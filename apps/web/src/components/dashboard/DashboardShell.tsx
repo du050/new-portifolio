@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { Bell, ChevronLeft, Menu, Search, Settings, X } from 'lucide-react';
+import { Bell, ChevronLeft, LogOut, Menu, Search, Settings, X } from 'lucide-react';
 import { useState } from 'react';
 import { ExperienceModeSwitch } from '@/components/experience/ExperienceModeSwitch';
 import { Button } from '@/components/ui/Button';
 import { DASHBOARD_TABS, type DashboardTabId } from '@/lib/dashboard-tabs';
+import { useAuthStore } from '@/stores/auth-store';
 import { useDashboardTabStore } from '@/stores/use-dashboard-tab-store';
 import { useTheme } from '@/providers/ThemeProvider';
 import { cn } from '@/lib/utils';
@@ -59,6 +60,9 @@ export function DashboardShell({
   const setActiveTab = useDashboardTabStore((state) => state.setActiveTab);
   const searchQuery = useDashboardTabStore((state) => state.searchQuery);
   const setSearchQuery = useDashboardTabStore((state) => state.setSearchQuery);
+  const authUser = useAuthStore((state) => state.user);
+  const clearSession = useAuthStore((state) => state.clearSession);
+  const workspaceTitle = authUser?.name ?? profileName;
 
   const handleTabSelect = (tabId: DashboardTabId): void => {
     setActiveTab(tabId);
@@ -86,7 +90,7 @@ export function DashboardShell({
                 <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                   Portfolio OS
                 </p>
-                <p className="text-sm font-semibold">{profileName}</p>
+                <p className="text-sm font-semibold">{workspaceTitle}</p>
               </div>
             )}
             <Button
@@ -127,12 +131,23 @@ export function DashboardShell({
 
           <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
             <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/60">
-              {!isSidebarCollapsed && (
+              {!isSidebarCollapsed && authUser ? (
                 <>
                   <p className="text-xs text-zinc-500">Signed in as</p>
-                  <p className="text-sm font-medium">{profileName}</p>
+                  <p className="text-sm font-medium">{authUser.name}</p>
+                  <p className="mt-0.5 text-xs text-indigo-600 dark:text-indigo-300">{authUser.role}</p>
                 </>
-              )}
+              ) : null}
+              <Button
+                variant="ghost"
+                size={isSidebarCollapsed ? 'icon' : 'sm'}
+                className={cn('mt-2 w-full', isSidebarCollapsed && 'mt-0')}
+                onClick={() => clearSession()}
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+                {!isSidebarCollapsed ? 'Sign out' : null}
+              </Button>
             </div>
           </div>
         </aside>

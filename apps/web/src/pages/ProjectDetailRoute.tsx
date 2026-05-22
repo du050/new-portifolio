@@ -1,3 +1,4 @@
+import { DashboardAuthGate } from '@/components/dashboard/DashboardAuthGate';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { CreativeAppShell } from '@/components/layout/CreativeAppShell';
 import { ProjectDetailPage } from '@/pages/ProjectDetailPage';
@@ -10,9 +11,11 @@ export function ProjectDetailRoute(): React.JSX.Element {
 
   if (mode === 'dashboard') {
     return (
-      <DashboardShell profileName={portfolio?.profile.name}>
-        <ProjectDetailPage />
-      </DashboardShell>
+      <DashboardAuthGate>
+        <DashboardShell profileName={portfolio?.profile.name}>
+          <ProjectDetailPage />
+        </DashboardShell>
+      </DashboardAuthGate>
     );
   }
 

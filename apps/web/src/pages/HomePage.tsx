@@ -1,3 +1,4 @@
+import { DashboardAuthGate } from '@/components/dashboard/DashboardAuthGate';
 import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
 import { ModeAwareAppShell } from '@/components/layout/ModeAwareAppShell';
 import { CreativePortfolioPage } from '@/pages/CreativePortfolioPage';
@@ -19,11 +20,13 @@ export function HomePage(): React.JSX.Element {
         />
       }
       dashboard={
-        <DashboardOverview
-          portfolio={portfolio}
-          githubStats={githubStats}
-          isLoading={isLoading}
-        />
+        <DashboardAuthGate>
+          <DashboardOverview
+            portfolio={portfolio}
+            githubStats={githubStats}
+            isLoading={isLoading}
+          />
+        </DashboardAuthGate>
       }
     />
   );
