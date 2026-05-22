@@ -10,6 +10,11 @@ import { usePortfolio } from '@/hooks/use-portfolio';
 import { pageTransition } from '@/lib/animations';
 import { useDashboardTabStore } from '@/stores/use-dashboard-tab-store';
 import { useExperienceModeStore } from '@/stores/use-experience-mode-store';
+import {
+  OBSERVABILITY_DEMO_PATH,
+  isInternalDemoUrl,
+  isObservabilityProject,
+} from '@/lib/project-demo-links';
 import { cn } from '@/lib/utils';
 
 export function ProjectDetailPage(): React.JSX.Element {
@@ -20,6 +25,16 @@ export function ProjectDetailPage(): React.JSX.Element {
   const isDashboard = mode === 'dashboard';
 
   const project = portfolio?.projects.find((item) => item.slug === slug);
+  const hasLiveDemo =
+    project !== undefined &&
+    (isObservabilityProject(project.slug) || isInternalDemoUrl(project.demoUrl));
+
+  const liveDemoPath =
+    project !== undefined && isInternalDemoUrl(project.demoUrl)
+      ? project.demoUrl.startsWith('/')
+        ? project.demoUrl
+        : `/${project.demoUrl}`
+      : OBSERVABILITY_DEMO_PATH;
 
   const handleBackToProjects = (): void => {
     setActiveTab('projects');
@@ -84,7 +99,15 @@ export function ProjectDetailPage(): React.JSX.Element {
             </Button>
           </a>
         )}
-        {project.demoUrl && (
+        {hasLiveDemo ? (
+          <Button variant="accent" asChild magnetic={false}>
+            <Link to={liveDemoPath}>
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              Open live observability workspace
+            </Link>
+          </Button>
+        ) : null}
+        {project.demoUrl && !hasLiveDemo && (
           <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
             <Button variant="accent">
               <ExternalLink className="h-4 w-4" />

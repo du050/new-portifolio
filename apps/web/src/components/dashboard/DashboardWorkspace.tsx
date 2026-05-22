@@ -13,6 +13,7 @@ import {
   DashboardSkillsPanel,
 } from '@/components/dashboard/dashboard-tab-panels';
 import { DashboardAdminPanel } from '@/components/dashboard/DashboardAdminPanel';
+import { DevOpsMonitoringPanel } from '@/components/dashboard/DevOpsMonitoringPanel';
 import { useDashboardTabStore } from '@/stores/use-dashboard-tab-store';
 
 interface DashboardWorkspaceProps {
@@ -60,6 +61,8 @@ export function DashboardWorkspace({
         return <DashboardGrowthPanel {...panelProps} />;
       case 'analytics':
         return <DashboardAnalyticsPanel {...panelProps} />;
+      case 'observability':
+        return <DevOpsMonitoringPanel />;
       case 'contact':
         return <DashboardContactPanel {...panelProps} />;
       case 'admin':

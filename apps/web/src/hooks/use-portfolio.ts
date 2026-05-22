@@ -1,6 +1,7 @@
 import type { PortfolioContent } from '@portfolio/shared';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchApi } from '@/lib/api-client';
+import { normalizePortfolioContent } from '@/lib/normalize-portfolio-content';
 import { PORTFOLIO_FALLBACK } from '@/data/portfolio-fallback';
 
 interface UsePortfolioResult {
@@ -24,9 +25,9 @@ export function usePortfolio(): UsePortfolioResult {
 
     try {
       const content = await fetchApi<PortfolioContent>('/portfolio');
-      setData(content);
+      setData(normalizePortfolioContent(content));
     } catch {
-      setData(PORTFOLIO_FALLBACK);
+      setData(normalizePortfolioContent(PORTFOLIO_FALLBACK));
       setHasError(true);
       setErrorMessage('Using cached portfolio data — API unavailable.');
     } finally {

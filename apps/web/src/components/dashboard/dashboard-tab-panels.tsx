@@ -21,6 +21,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useContactForm } from '@/hooks/use-contact-form';
 import { buildDashboardData } from '@/lib/dashboard-data';
+import { OBSERVABILITY_DEMO_PATH, isObservabilityProject } from '@/lib/project-demo-links';
 import { WORKFLOW_CALLOUTS, WORKFLOW_ITEMS } from '@/lib/workflow-content';
 import { cn } from '@/lib/utils';
 
@@ -303,7 +304,7 @@ export function DashboardProjectsPanel({
     <div className="space-y-5">
       <DashboardPageHeader
         tabId="projects"
-        description="Project portfolio shown as operating records and architecture decisions."
+        description="Flagship observability project shown as an operating record with architecture decisions and a live demo."
       />
 
       <ProjectOperationsTable rows={filteredRows} />
@@ -332,6 +333,8 @@ export function DashboardProjectsPanel({
 }
 
 function ProjectDecisionRow({ project }: { readonly project: Project }): React.JSX.Element {
+  const isObservability = isObservabilityProject(project.slug);
+
   return (
     <tr>
       <td className="px-4 py-3">
@@ -347,12 +350,22 @@ function ProjectDecisionRow({ project }: { readonly project: Project }): React.J
         {project.scalability[0] ?? project.metrics[0]?.value}
       </td>
       <td className="px-4 py-3">
-        <Link to={`/projects/${project.slug}`}>
-          <Button variant="outline" size="sm">
-            Open
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          {isObservability ? (
+            <Button variant="accent" size="sm" asChild magnetic={false}>
+              <Link to={OBSERVABILITY_DEMO_PATH}>
+                Live demo
+                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </Button>
+          ) : null}
+          <Link to={`/projects/${project.slug}`}>
+            <Button variant="outline" size="sm">
+              Open
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </div>
       </td>
     </tr>
   );

@@ -1,4 +1,5 @@
 import {
+  Activity,
   Award,
   Briefcase,
   GitBranch,
@@ -21,6 +22,7 @@ export type DashboardTabId =
   | 'experience'
   | 'growth'
   | 'analytics'
+  | 'observability'
   | 'contact'
   | 'admin';
 
@@ -40,6 +42,7 @@ export const DASHBOARD_TABS: readonly DashboardTabDefinition[] = [
   { id: 'experience', label: 'Experience', icon: Briefcase, creativeSectionId: 'experience' },
   { id: 'growth', label: 'Growth', icon: Award, creativeSectionId: 'certifications' },
   { id: 'analytics', label: 'Analytics', icon: GitBranch, creativeSectionId: 'github' },
+  { id: 'observability', label: 'Observability', icon: Activity, creativeSectionId: 'projects' },
   { id: 'contact', label: 'Contact', icon: Mail, creativeSectionId: 'contact' },
   { id: 'admin', label: 'Admin', icon: Shield, creativeSectionId: 'hero' },
 ] as const;

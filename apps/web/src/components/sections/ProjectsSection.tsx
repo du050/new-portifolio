@@ -8,8 +8,14 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { Card, CardContent } from '@/components/ui/Card';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { fadeInUp, staggerContainer } from '@/lib/animations';
+import { staggerContainer } from '@/lib/animations';
 import { SECTION_IDS } from '@/lib/constants';
+import {
+  OBSERVABILITY_DEMO_PATH,
+  OBSERVABILITY_PROJECT_SLUG,
+  isInternalDemoUrl,
+  isObservabilityProject,
+} from '@/lib/project-demo-links';
 import { cn } from '@/lib/utils';
 
 interface ProjectsSectionProps {
@@ -21,58 +27,29 @@ export function ProjectsSection({
   projects,
   isLoading,
 }: ProjectsSectionProps): React.JSX.Element {
-  const featured = projects.filter((project) => project.featured);
-  const others = projects.filter((project) => !project.featured);
+  const primaryProject = projects[0] ?? null;
 
   return (
     <AnimatedSection id={SECTION_IDS.PROJECTS}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
-          label="Projects"
-          title="Case studies with architecture, taste, and measurable impact"
-          description="Each project is framed like a product decision: what was hard, what tradeoffs mattered, and how the system stays maintainable."
+          label="Project"
+          title="Enterprise observability built as a shippable product surface"
+          description="A single flagship build: live operations telemetry, deployment pipelines, Kubernetes signals, and incident workflows — framed like an internal SaaS platform."
         />
 
         {isLoading ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} className="h-72" />
-            ))}
-          </div>
-        ) : (
-          <>
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-8 grid gap-4 md:grid-cols-2"
-            >
-              {featured.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  featured
-                  className={index === 0 ? 'md:col-span-2' : ''}
-                />
-              ))}
-            </motion.div>
-
-            {others.length > 0 && (
-              <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              >
-                {others.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </motion.div>
-            )}
-          </>
-        )}
+          <Skeleton className="h-80 w-full" />
+        ) : primaryProject ? (
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <ProjectCard project={primaryProject} featured className="w-full" />
+          </motion.div>
+        ) : null}
       </div>
     </AnimatedSection>
   );
@@ -89,8 +66,19 @@ function ProjectCard({
   featured = false,
   className,
 }: ProjectCardProps): React.JSX.Element {
+  const detailPath = `/projects/${project.slug}`;
+  const hasLiveDemo =
+    isObservabilityProject(project.slug) ||
+    isInternalDemoUrl(project.demoUrl) ||
+    project.slug === OBSERVABILITY_PROJECT_SLUG;
+  const liveDemoPath = isInternalDemoUrl(project.demoUrl)
+    ? project.demoUrl.startsWith('/')
+      ? project.demoUrl
+      : `/${project.demoUrl}`
+    : OBSERVABILITY_DEMO_PATH;
+
   return (
-    <motion.div variants={fadeInUp} className={className}>
+    <div className={className}>
       <Card
         glass
         className={cn(
@@ -117,7 +105,7 @@ function ProjectCard({
         <CardContent className={cn('flex flex-col p-6', featured && 'md:w-3/5')}>
           <div className="mb-3 flex flex-wrap gap-1.5">
             <Badge variant="accent">{project.category}</Badge>
-            {project.techStack.slice(0, 3).map((tech) => (
+            {project.techStack.map((tech) => (
               <Badge key={tech} variant="outline">
                 {tech}
               </Badge>
@@ -125,7 +113,9 @@ function ProjectCard({
           </div>
 
           <h3 className="text-lg font-semibold tracking-tight transition-colors group-hover:text-accent">
-            {project.title}
+            <Link to={detailPath} className="hover:text-accent">
+              {project.title}
+            </Link>
           </h3>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
             {project.description}
@@ -149,28 +139,36 @@ function ProjectCard({
             </p>
           </div>
 
-          <div className="mt-5 flex items-center gap-2">
-            <Link to={`/projects/${project.slug}`}>
-              <Button variant="outline" size="sm">
-                Details
-                <ArrowUpRight className="h-3.5 w-3.5" />
+          <div className="relative z-10 mt-5 flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" asChild magnetic={false}>
+              <Link to={detailPath}>
+                View details
+                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </Button>
+            {hasLiveDemo ? (
+              <Button variant="accent" size="sm" asChild magnetic={false}>
+                <Link to={liveDemoPath}>
+                  Open live demo
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
               </Button>
-            </Link>
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`GitHub repository for ${project.title}`}
-              >
-                <Button variant="ghost" size="icon">
-                  <Github className="h-4 w-4" />
-                </Button>
-              </a>
-            )}
+            ) : null}
+            {project.githubUrl ? (
+              <Button variant="ghost" size="icon" asChild magnetic={false}>
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`GitHub repository for ${project.title}`}
+                >
+                  <Github className="h-4 w-4" aria-hidden="true" />
+                </a>
+              </Button>
+            ) : null}
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }

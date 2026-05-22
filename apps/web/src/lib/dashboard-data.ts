@@ -84,7 +84,7 @@ function mapProjectRisk(category: string): 'low' | 'medium' | 'high' {
   if (category === 'Infrastructure' || category === 'Cloud') {
     return 'medium';
   }
-  if (category === 'Monitoring') {
+  if (category === 'Monitoring' || category === 'Observability') {
     return 'high';
   }
   return 'low';
