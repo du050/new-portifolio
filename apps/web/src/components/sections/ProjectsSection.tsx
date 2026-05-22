@@ -34,8 +34,8 @@ export function ProjectsSection({
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           label="Project"
-          title="Enterprise observability built as a shippable product surface"
-          description="A single flagship build: live operations telemetry, deployment pipelines, Kubernetes signals, and incident workflows — framed like an internal SaaS platform."
+          title="A flagship build that shows how I think about production systems"
+          description="One focused project — an observability workspace with live telemetry, pipelines, and operational panels, built to demonstrate full-stack craft and growing DevOps awareness."
         />
 
         {isLoading ? (

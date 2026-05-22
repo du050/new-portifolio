@@ -4,11 +4,13 @@ import { ModeAwareAppShell } from '@/components/layout/ModeAwareAppShell';
 import { CreativePortfolioPage } from '@/pages/CreativePortfolioPage';
 import { useDashboardDeepLink } from '@/hooks/use-dashboard-deep-link';
 import { usePortfolio } from '@/hooks/use-portfolio';
+import { usePortfolioDocumentMeta } from '@/hooks/use-portfolio-document-meta';
 import { useGitHubStats } from '@/hooks/use-github-stats';
 
 export function HomePage(): React.JSX.Element {
   useDashboardDeepLink();
   const { data: portfolio, isLoading } = usePortfolio();
+  usePortfolioDocumentMeta(portfolio);
   const { data: githubStats, isLoading: isGitHubLoading } = useGitHubStats();
 
   return (

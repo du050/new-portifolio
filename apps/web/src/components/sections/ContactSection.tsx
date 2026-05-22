@@ -58,7 +58,7 @@ export function ContactSection({ profile }: ContactSectionProps): React.JSX.Elem
         <SectionHeading
           label="Contact"
           title="Bring me the messy problem"
-          description="I am especially strong where product experience, backend architecture, and delivery confidence need to meet."
+          description="Open to junior and early-career roles where I can learn from strong mentors while contributing to real product delivery."
           align="center"
         />
 
@@ -67,14 +67,14 @@ export function ContactSection({ profile }: ContactSectionProps): React.JSX.Elem
             <div className="aurora-card glass rounded-[2rem] p-6">
               <h3 className="text-lg font-semibold">Best-fit conversations</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                I love roles and projects where the details matter: workflow design, scalable
-                backend systems, DevOps maturity, and polished product delivery.
+                I am looking for teams that value clear communication, code review, and steady
+                improvement — full-stack features, API work, and growing DevOps exposure.
               </p>
               <div className="mt-5 space-y-2">
                 {[
-                  'Full-stack product engineering',
-                  'Cloud and DevOps platform work',
-                  'Complex UX backed by reliable systems',
+                  'Junior full-stack engineering',
+                  'Backend APIs with TypeScript',
+                  'Observability-minded delivery',
                 ].map((item) => (
                   <div
                     key={item}

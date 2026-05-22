@@ -61,7 +61,7 @@ export function useAdminAutoSave({
       lastPersistedSnapshotRef.current = updatedSerialized;
       onSaved(updated);
       setStatus('saved');
-      setStatusMessage('All changes saved.');
+      setStatusMessage('Saved — live site preview is up to date.');
     } catch (error) {
       if (saveRequestIdRef.current !== requestId) {
         return;

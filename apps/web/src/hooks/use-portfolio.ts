@@ -1,43 +1,31 @@
 import type { PortfolioContent } from '@portfolio/shared';
-import { useCallback, useEffect, useState } from 'react';
-import { fetchApi } from '@/lib/api-client';
-import { normalizePortfolioContent } from '@/lib/normalize-portfolio-content';
-import { PORTFOLIO_FALLBACK } from '@/data/portfolio-fallback';
+import { useEffect } from 'react';
+import { usePortfolioStore } from '@/stores/portfolio-store';
 
 interface UsePortfolioResult {
   readonly data: PortfolioContent | null;
   readonly isLoading: boolean;
   readonly hasError: boolean;
   readonly errorMessage: string | null;
-  readonly refetch: () => void;
+  readonly refetch: () => Promise<void>;
 }
 
 export function usePortfolio(): UsePortfolioResult {
-  const [data, setData] = useState<PortfolioContent | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hasError, setHasError] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const fetchPortfolio = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
-    setHasError(false);
-    setErrorMessage(null);
-
-    try {
-      const content = await fetchApi<PortfolioContent>('/portfolio');
-      setData(normalizePortfolioContent(content));
-    } catch {
-      setData(normalizePortfolioContent(PORTFOLIO_FALLBACK));
-      setHasError(true);
-      setErrorMessage('Using cached portfolio data — API unavailable.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const content = usePortfolioStore((state) => state.content);
+  const isLoading = usePortfolioStore((state) => state.isLoading);
+  const hasError = usePortfolioStore((state) => state.hasError);
+  const errorMessage = usePortfolioStore((state) => state.errorMessage);
+  const fetchPortfolio = usePortfolioStore((state) => state.fetchPortfolio);
 
   useEffect(() => {
     void fetchPortfolio();
   }, [fetchPortfolio]);
 
-  return { data, isLoading, hasError, errorMessage, refetch: fetchPortfolio };
+  return {
+    data: content,
+    isLoading,
+    hasError,
+    errorMessage,
+    refetch: fetchPortfolio,
+  };
 }

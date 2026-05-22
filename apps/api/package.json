@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "predev": "npm run build -w @portfolio/shared",
-    "dev": "nest start --watch --builder tsc",
+    "predev": "npm run build -w @portfolio/shared && nest build",
+    "dev": "node --watch dist/main.js",
     "start": "node dist/main.js",
     "start:prod": "node dist/main.js",
     "db:generate": "prisma generate",

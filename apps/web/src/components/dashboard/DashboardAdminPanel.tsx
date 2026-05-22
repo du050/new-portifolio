@@ -11,7 +11,7 @@ export function DashboardAdminPanel(): React.JSX.Element {
         tabId="admin"
         description={
           canEditPortfolio
-            ? 'Edit variable names and values across tabs, then save once.'
+            ? 'Edits auto-save and reflect across the portfolio immediately.'
             : 'Read-only preview of portfolio content. Owner Super Admin can save changes.'
         }
       />

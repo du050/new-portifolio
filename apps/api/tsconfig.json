@@ -15,10 +15,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-    "paths": {
-      "@portfolio/shared": ["../../packages/shared/dist"]
-    }
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -22,22 +22,31 @@ export async function performAdminLogin(
     });
     useAuthStore.setState({ accessToken: login.accessToken, user: login.user });
 
-    const access = await fetchAuthApi<{
-      canEditPortfolio: boolean;
-      canManageUsers: boolean;
-    }>('/admin/access');
+    let canEditPortfolio = login.user.role === 'SUPER_ADMIN';
+    let canManageUsers = login.user.role === 'SUPER_ADMIN';
+
+    try {
+      const access = await fetchAuthApi<{
+        canEditPortfolio: boolean;
+        canManageUsers: boolean;
+      }>('/admin/access');
+      canEditPortfolio = access.canEditPortfolio;
+      canManageUsers = access.canManageUsers;
+    } catch {
+      // Keep role-derived flags when /admin/access is temporarily unavailable.
+    }
 
     useAuthStore.getState().setSession({
       accessToken: login.accessToken,
       user: login.user,
-      canEditPortfolio: access.canEditPortfolio,
-      canManageUsers: access.canManageUsers,
+      canEditPortfolio,
+      canManageUsers,
     });
 
     return {
       user: login.user,
-      canEditPortfolio: access.canEditPortfolio,
-      canManageUsers: access.canManageUsers,
+      canEditPortfolio,
+      canManageUsers,
     };
   } catch (error) {
     if (error instanceof TypeError) {

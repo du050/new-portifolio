@@ -3,8 +3,10 @@ import { CloudUpload, ShieldAlert } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { useAdminAutoSave } from '@/hooks/use-admin-auto-save';
-import { fetchAuthApi } from '@/lib/api-client';
+import { ApiClientError, fetchAuthApi } from '@/lib/api-client';
+import { normalizePortfolioContent } from '@/lib/normalize-portfolio-content';
 import { useAuthStore } from '@/stores/auth-store';
+import { usePortfolioStore } from '@/stores/portfolio-store';
 import { cn } from '@/lib/utils';
 import { PortfolioAdminCertificationsSection } from './sections/portfolio-admin-certifications-section';
 import { PortfolioAdminExperienceSection } from './sections/portfolio-admin-experience-section';
@@ -66,11 +68,19 @@ export function PortfolioAdminEditor({
   const [content, setContent] = useState<PortfolioContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [loadErrorMessage, setLoadErrorMessage] = useState<string | null>(null);
   const [isSavingManual, setIsSavingManual] = useState(false);
 
-  const handleContentSaved = useCallback((updated: PortfolioContent): void => {
-    setContent(structuredClone(updated));
-  }, []);
+  const publishContent = usePortfolioStore((state) => state.publishContent);
+
+  const handleContentSaved = useCallback(
+    (updated: PortfolioContent): void => {
+      const normalized = normalizePortfolioContent(updated);
+      setContent(structuredClone(normalized));
+      publishContent(normalized);
+    },
+    [publishContent],
+  );
 
   const { status: saveStatus, statusMessage, saveNow } = useAdminAutoSave({
     content,
@@ -78,18 +88,44 @@ export function PortfolioAdminEditor({
     onSaved: handleContentSaved,
   });
 
+  const handleContentChange = useCallback(
+    (next: PortfolioContent): void => {
+      const normalized = normalizePortfolioContent(next);
+      setContent(structuredClone(normalized));
+      publishContent(normalized);
+    },
+    [publishContent],
+  );
+
   const loadContent = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     setHasError(false);
+    setLoadErrorMessage(null);
     try {
       const portfolio = await fetchAuthApi<PortfolioContent>('/admin/portfolio');
-      setContent(structuredClone(portfolio));
-    } catch {
-      setHasError(true);
+      const normalized = normalizePortfolioContent(portfolio);
+      setContent(structuredClone(normalized));
+      publishContent(normalized);
+    } catch (error) {
+      const message =
+        error instanceof ApiClientError
+          ? error.message
+          : 'Could not load admin portfolio data. Check API and database connection.';
+      const cached = usePortfolioStore.getState().content;
+      if (cached) {
+        const normalized = normalizePortfolioContent(cached);
+        setContent(structuredClone(normalized));
+        setHasError(false);
+        setLoadErrorMessage(`Showing cached content. ${message}`);
+      } else {
+        setHasError(true);
+        setLoadErrorMessage(message);
+        setContent(null);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [publishContent]);
 
   useEffect(() => {
     void loadContent();
@@ -113,9 +149,12 @@ export function PortfolioAdminEditor({
 
   if (hasError || !content) {
     return (
-      <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-        Could not load admin portfolio data. Check API and database connection.
-      </p>
+      <div className="space-y-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p>{loadErrorMessage ?? 'Could not load admin portfolio data. Check API and database connection.'}</p>
+        <Button type="button" variant="outline" size="sm" onClick={() => void loadContent()}>
+          Retry
+        </Button>
+      </div>
     );
   }
 
@@ -125,7 +164,7 @@ export function PortfolioAdminEditor({
     isReadOnly,
     canEditStructure: canEditPortfolio,
     variant,
-    onChange: setContent,
+    onChange: handleContentChange,
   };
   const saveStatusLabel = getSaveStatusLabel(saveStatus, isSavingManual);
   const isSaving = saveStatus === 'saving' || saveStatus === 'pending' || isSavingManual;
@@ -149,8 +188,8 @@ export function PortfolioAdminEditor({
         </div>
       ) : (
         <p className={cn('text-sm', isEnterprise ? 'text-zinc-600 dark:text-zinc-400' : 'text-zinc-400')}>
-          Changes save automatically as you edit. Long text fields can be resized vertically to
-          read the full content.
+          Changes save automatically and update the portfolio UI immediately — switch tabs or
+          modes to preview without refreshing.
         </p>
       )}
 
