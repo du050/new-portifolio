@@ -1,7 +1,7 @@
 import type { LearningPath, PortfolioContent } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionCard, AdminStringList } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 
@@ -41,20 +41,26 @@ export function PortfolioAdminLearningSection({
     <section className="space-y-4">
       {content.learningPaths.map((path, pathIndex) => (
         <AdminSectionCard key={path.id} variant={variant}>
-          <AdminVariableRow
-            variableLabel="learningPaths.id"
-            variableValue={path.id}
-            valueLabel="learningPaths.title"
+          {canEditStructure ? (
+            <AdminField
+              label="learningPaths.id"
+              value={path.id}
+              isReadOnly={isReadOnly}
+              variant={variant}
+              onChange={(id) => updatePath(pathIndex, { ...path, id })}
+            />
+          ) : null}
+          <AdminField
+            label="learningPaths.title"
             value={path.title}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
-            onVariableChange={(id) => updatePath(pathIndex, { ...path, id })}
-            onValueChange={(title) => updatePath(pathIndex, { ...path, title })}
+            onChange={(title) => updatePath(pathIndex, { ...path, title })}
           />
           <AdminField
             label="learningPaths.description"
             multiline
+            textareaSize="long"
             value={path.description}
             isReadOnly={isReadOnly}
             variant={variant}
@@ -76,9 +82,8 @@ export function PortfolioAdminLearningSection({
           <AdminStringList
             title="Topics"
             items={path.topics}
-            variableLabel="topics"
+            fieldLabel="topics"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
             onChange={(topics) => updatePath(pathIndex, { ...path, topics })}
           />

@@ -1,7 +1,7 @@
 import type { PortfolioContent, SocialLink } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminFieldPair } from '@/components/admin/admin-variable-row';
 import { AdminSectionCard, AdminStringList } from '@/components/admin/admin-string-list';
 
 interface PortfolioAdminProfileSectionProps {
@@ -43,8 +43,8 @@ export function PortfolioAdminProfileSection({
         <div className="grid gap-4 md:grid-cols-2">
           <AdminField label="profile.name" value={profile.name} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ name: v })} />
           <AdminField label="profile.title" value={profile.title} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ title: v })} />
-          <AdminField label="profile.headline" value={profile.headline} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ headline: v })} />
-          <AdminField label="profile.subheadline" value={profile.subheadline} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ subheadline: v })} />
+          <AdminField label="profile.headline" multiline value={profile.headline} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ headline: v })} />
+          <AdminField label="profile.subheadline" multiline textareaSize="long" value={profile.subheadline} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ subheadline: v })} />
           <AdminField label="profile.location" value={profile.location} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ location: v })} />
           <AdminField label="profile.email" type="email" value={profile.email} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ email: v })} />
         </div>
@@ -56,18 +56,17 @@ export function PortfolioAdminProfileSection({
           <AdminField label="profile.avatarUrl" value={profile.avatarUrl} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ avatarUrl: v })} />
           <AdminField label="profile.resumeUrl" value={profile.resumeUrl} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ resumeUrl: v })} />
         </div>
-        <AdminField label="profile.bio" multiline value={profile.bio} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ bio: v })} />
+        <AdminField label="profile.bio" multiline textareaSize="long" value={profile.bio} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProfile({ bio: v })} />
       </AdminSectionCard>
 
       <AdminSectionCard variant={variant}>
         <AdminStringList
           title="About paragraphs"
           items={profile.aboutParagraphs}
-          variableLabel="aboutParagraphs"
-          valueLabel="Paragraph text"
+          fieldLabel="aboutParagraphs"
           isReadOnly={isReadOnly}
-          canEditVariable={canEditStructure}
           variant={variant}
+          multiline
           onChange={(items) => updateProfile({ aboutParagraphs: items })}
         />
       </AdminSectionCard>
@@ -76,16 +75,15 @@ export function PortfolioAdminProfileSection({
         <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">Social links</p>
         {profile.socialLinks.map((link, index) => (
           <div key={`social-${index}`} className="space-y-3 border-t border-zinc-200 pt-4 first:border-0 first:pt-0 dark:border-zinc-800">
-            <AdminVariableRow
-              variableLabel="socialLinks.platform"
-              variableValue={link.platform}
-              valueLabel="socialLinks.url"
-              value={link.url}
+            <AdminFieldPair
+              leftLabel="socialLinks.platform"
+              leftValue={link.platform}
+              rightLabel="socialLinks.url"
+              rightValue={link.url}
               isReadOnly={isReadOnly}
-              canEditVariable={canEditStructure}
               variant={variant}
-              onVariableChange={(platform) => updateSocialLink(index, { ...link, platform })}
-              onValueChange={(url) => updateSocialLink(index, { ...link, url })}
+              onLeftChange={(platform) => updateSocialLink(index, { ...link, platform })}
+              onRightChange={(url) => updateSocialLink(index, { ...link, url })}
             />
             <AdminField
               label="socialLinks.icon"

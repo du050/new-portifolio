@@ -1,3 +1,8 @@
+import {
+  getAdminTextareaClassName,
+  getTextareaRowCount,
+  type AdminTextareaSize,
+} from '@/lib/admin-textarea-utils';
 import { cn } from '@/lib/utils';
 
 interface AdminFieldProps {
@@ -7,6 +12,7 @@ interface AdminFieldProps {
   readonly isReadOnly: boolean;
   readonly type?: 'text' | 'number' | 'email' | 'url';
   readonly multiline?: boolean;
+  readonly textareaSize?: AdminTextareaSize;
   readonly variant?: 'standalone' | 'enterprise';
 }
 
@@ -17,6 +23,7 @@ export function AdminField({
   isReadOnly,
   type = 'text',
   multiline = false,
+  textareaSize = 'default',
   variant = 'enterprise',
 }: AdminFieldProps): React.JSX.Element {
   const isEnterprise = variant === 'enterprise';
@@ -25,7 +32,9 @@ export function AdminField({
     isEnterprise
       ? 'border-zinc-300 bg-white text-zinc-900 focus:border-indigo-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100'
       : 'border-zinc-700 bg-zinc-950 text-white focus:border-violet-500',
+    multiline && getAdminTextareaClassName(textareaSize),
   );
+  const textValue = String(value);
 
   return (
     <label className="block space-y-1.5">
@@ -39,8 +48,8 @@ export function AdminField({
       </span>
       {multiline ? (
         <textarea
-          rows={3}
-          value={String(value)}
+          rows={getTextareaRowCount(textValue, textareaSize)}
+          value={textValue}
           readOnly={isReadOnly}
           disabled={isReadOnly}
           onChange={(event) => onChange(event.target.value)}

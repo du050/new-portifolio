@@ -1,26 +1,24 @@
 import { Button } from '@/components/ui/Button';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminField } from '@/components/admin/admin-field';
 import { cn } from '@/lib/utils';
 
 interface AdminStringListProps {
   readonly title: string;
   readonly items: readonly string[];
-  readonly variableLabel: string;
-  readonly valueLabel?: string;
+  readonly fieldLabel: string;
   readonly isReadOnly: boolean;
-  readonly canEditVariable: boolean;
   readonly variant?: 'standalone' | 'enterprise';
+  readonly multiline?: boolean;
   readonly onChange: (items: readonly string[]) => void;
 }
 
 export function AdminStringList({
   title,
   items,
-  variableLabel,
-  valueLabel = 'Value',
+  fieldLabel,
   isReadOnly,
-  canEditVariable,
   variant = 'enterprise',
+  multiline = false,
   onChange,
 }: AdminStringListProps): React.JSX.Element {
   const updateItem = (index: number, value: string): void => {
@@ -42,16 +40,14 @@ export function AdminStringList({
       <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">{title}</p>
       {items.map((item, index) => (
         <div key={`${title}-${index}`} className="space-y-2">
-          <AdminVariableRow
-            variableLabel={`${variableLabel}[${index}]`}
-            variableValue={item}
-            valueLabel={valueLabel}
+          <AdminField
+            label={`${fieldLabel}[${index}]`}
             value={item}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditVariable}
             variant={variant}
-            onVariableChange={(value) => updateItem(index, value)}
-            onValueChange={(value) => updateItem(index, value)}
+            multiline={multiline}
+            textareaSize={multiline ? 'long' : 'default'}
+            onChange={(value) => updateItem(index, value)}
           />
           {!isReadOnly ? (
             <Button

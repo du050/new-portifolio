@@ -1,7 +1,7 @@
 import type { PortfolioContent, Project, ProjectMetric } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminFieldPair } from '@/components/admin/admin-variable-row';
 import { AdminSectionCard, AdminStringList } from '@/components/admin/admin-string-list';
 import { createEntityId, slugifyValue } from '@/lib/admin-editor-utils';
 
@@ -62,16 +62,15 @@ export function PortfolioAdminProjectsSection({
     <section className="space-y-6">
       {content.projects.map((project, projectIndex) => (
         <AdminSectionCard key={project.id} variant={variant}>
-          <AdminVariableRow
-            variableLabel="projects.slug"
-            variableValue={project.slug}
-            valueLabel="projects.title"
-            value={project.title}
+          <AdminFieldPair
+            leftLabel="projects.slug"
+            leftValue={project.slug}
+            rightLabel="projects.title"
+            rightValue={project.title}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
-            onVariableChange={(slug) => updateProject(projectIndex, { ...project, slug })}
-            onValueChange={(title) =>
+            onLeftChange={(slug) => updateProject(projectIndex, { ...project, slug })}
+            onRightChange={(title) =>
               updateProject(projectIndex, {
                 ...project,
                 title,
@@ -96,8 +95,8 @@ export function PortfolioAdminProjectsSection({
             />
             projects.featured
           </label>
-          <AdminField label="projects.description" multiline value={project.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProject(projectIndex, { ...project, description: v })} />
-          <AdminField label="projects.longDescription" multiline value={project.longDescription} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProject(projectIndex, { ...project, longDescription: v })} />
+          <AdminField label="projects.description" multiline textareaSize="long" value={project.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProject(projectIndex, { ...project, description: v })} />
+          <AdminField label="projects.longDescription" multiline textareaSize="long" value={project.longDescription} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateProject(projectIndex, { ...project, longDescription: v })} />
           <AdminField
             label="projects.techStack (comma-separated)"
             value={project.techStack.join(', ')}
@@ -137,28 +136,28 @@ export function PortfolioAdminProjectsSection({
           <AdminStringList
             title="Challenges"
             items={project.challenges}
-            variableLabel="challenges"
+            fieldLabel="challenges"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
+            multiline
             onChange={(items) => updateProject(projectIndex, { ...project, challenges: items })}
           />
           <AdminStringList
             title="Architecture"
             items={project.architecture}
-            variableLabel="architecture"
+            fieldLabel="architecture"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
+            multiline
             onChange={(items) => updateProject(projectIndex, { ...project, architecture: items })}
           />
           <AdminStringList
             title="Scalability"
             items={project.scalability}
-            variableLabel="scalability"
+            fieldLabel="scalability"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
+            multiline
             onChange={(items) => updateProject(projectIndex, { ...project, scalability: items })}
           />
 
@@ -206,20 +205,19 @@ function MetricRow({
 }: MetricRowProps): React.JSX.Element {
   return (
     <div className="space-y-2">
-      <AdminVariableRow
-        variableLabel="metrics.label"
-        variableValue={metric.label}
-        valueLabel="metrics.value"
-        value={metric.value}
+      <AdminFieldPair
+        leftLabel="metrics.label"
+        leftValue={metric.label}
+        rightLabel="metrics.value"
+        rightValue={metric.value}
         isReadOnly={isReadOnly}
-        canEditVariable={canEditStructure}
         variant={variant}
-        onVariableChange={(label) => {
+        onLeftChange={(label) => {
           const metrics = [...project.metrics];
           metrics[metricIndex] = { ...metric, label };
           onUpdateProject(projectIndex, { ...project, metrics });
         }}
-        onValueChange={(value) => {
+        onRightChange={(value) => {
           const metrics = [...project.metrics];
           metrics[metricIndex] = { ...metric, value };
           onUpdateProject(projectIndex, { ...project, metrics });

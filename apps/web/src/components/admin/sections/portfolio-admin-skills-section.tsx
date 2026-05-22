@@ -2,7 +2,7 @@ import type { PortfolioContent, Skill, SkillCategory } from '@portfolio/shared';
 import { Button } from '@/components/ui/Button';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminFieldPair } from '@/components/admin/admin-variable-row';
 import { AdminSectionCard } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 
@@ -53,16 +53,21 @@ export function PortfolioAdminSkillsSection({
     <section className="space-y-6">
       {content.skillCategories.map((category, categoryIndex) => (
         <AdminSectionCard key={category.id} variant={variant}>
-          <AdminVariableRow
-            variableLabel="skillCategories.id"
-            variableValue={category.id}
-            valueLabel="skillCategories.name"
+          {canEditStructure ? (
+            <AdminField
+              label="skillCategories.id"
+              value={category.id}
+              isReadOnly={isReadOnly}
+              variant={variant}
+              onChange={(id) => updateCategory(categoryIndex, { ...category, id })}
+            />
+          ) : null}
+          <AdminField
+            label="skillCategories.name"
             value={category.name}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
-            onVariableChange={(id) => updateCategory(categoryIndex, { ...category, id })}
-            onValueChange={(name) => updateCategory(categoryIndex, { ...category, name })}
+            onChange={(name) => updateCategory(categoryIndex, { ...category, name })}
           />
           <AdminField
             label="skillCategories.icon"
@@ -74,21 +79,20 @@ export function PortfolioAdminSkillsSection({
           <div className="space-y-3 border-t border-zinc-200 pt-4 dark:border-zinc-800">
             {category.skills.map((skill, skillIndex) => (
               <div key={`${category.id}-${skillIndex}`} className="space-y-2">
-                <AdminVariableRow
-                  variableLabel="skills.name"
-                  variableValue={skill.name}
-                  valueLabel="skills.level"
-                  value={skill.level}
-                  valueType="number"
+                <AdminFieldPair
+                  leftLabel="skills.name"
+                  leftValue={skill.name}
+                  rightLabel="skills.level"
+                  rightValue={skill.level}
+                  rightType="number"
                   isReadOnly={isReadOnly}
-                  canEditVariable={canEditStructure}
                   variant={variant}
-                  onVariableChange={(name) => {
+                  onLeftChange={(name) => {
                     const skills = [...category.skills];
                     skills[skillIndex] = { ...skill, name };
                     updateCategory(categoryIndex, { ...category, skills });
                   }}
-                  onValueChange={(value) => {
+                  onRightChange={(value) => {
                     const skills = [...category.skills];
                     skills[skillIndex] = { ...skill, level: Number(value) || 0 };
                     updateCategory(categoryIndex, { ...category, skills });

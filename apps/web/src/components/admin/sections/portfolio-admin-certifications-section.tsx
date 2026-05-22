@@ -1,7 +1,7 @@
 import type { Certification, PortfolioContent } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionCard } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 import { cn } from '@/lib/utils';
@@ -48,16 +48,21 @@ export function PortfolioAdminCertificationsSection({
     <section className="space-y-6">
       {content.certifications.map((item, index) => (
         <AdminSectionCard key={item.id} variant={variant}>
-          <AdminVariableRow
-            variableLabel="certifications.id"
-            variableValue={item.id}
-            valueLabel="certifications.name"
+          {canEditStructure ? (
+            <AdminField
+              label="certifications.id"
+              value={item.id}
+              isReadOnly={isReadOnly}
+              variant={variant}
+              onChange={(id) => updateItem(index, { ...item, id })}
+            />
+          ) : null}
+          <AdminField
+            label="certifications.name"
             value={item.name}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
-            onVariableChange={(id) => updateItem(index, { ...item, id })}
-            onValueChange={(name) => updateItem(index, { ...item, name })}
+            onChange={(name) => updateItem(index, { ...item, name })}
           />
           <AdminField label="certifications.issuer" value={item.issuer} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, issuer: v })} />
           <label className="block space-y-1.5">
@@ -89,7 +94,7 @@ export function PortfolioAdminCertificationsSection({
           </label>
           <AdminField label="certifications.date" value={item.date ?? ''} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, date: v || null })} />
           <AdminField label="certifications.credentialUrl" value={item.credentialUrl} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, credentialUrl: v })} />
-          <AdminField label="certifications.description" multiline value={item.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, description: v })} />
+          <AdminField label="certifications.description" multiline textareaSize="long" value={item.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, description: v })} />
           <AdminSectionActions
             isReadOnly={isReadOnly}
             addLabel="Add certification"

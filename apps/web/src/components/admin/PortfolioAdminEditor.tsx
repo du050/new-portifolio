@@ -1,8 +1,9 @@
 import type { PortfolioContent } from '@portfolio/shared';
-import { Save, ShieldAlert } from 'lucide-react';
+import { CloudUpload, ShieldAlert } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { fetchAuthApi, putAuthApi } from '@/lib/api-client';
+import { useAdminAutoSave } from '@/hooks/use-admin-auto-save';
+import { fetchAuthApi } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth-store';
 import { cn } from '@/lib/utils';
 import { PortfolioAdminCertificationsSection } from './sections/portfolio-admin-certifications-section';
@@ -33,6 +34,28 @@ interface PortfolioAdminEditorProps {
   readonly variant?: 'standalone' | 'enterprise';
 }
 
+function getSaveStatusLabel(
+  status: ReturnType<typeof useAdminAutoSave>['status'],
+  isSavingManual: boolean,
+): string {
+  if (isSavingManual) {
+    return 'Saving…';
+  }
+  if (status === 'pending') {
+    return 'Saving soon…';
+  }
+  if (status === 'saving') {
+    return 'Saving…';
+  }
+  if (status === 'saved') {
+    return 'Saved';
+  }
+  if (status === 'error') {
+    return 'Save failed';
+  }
+  return 'Ready';
+}
+
 export function PortfolioAdminEditor({
   variant = 'enterprise',
 }: PortfolioAdminEditorProps): React.JSX.Element {
@@ -42,9 +65,18 @@ export function PortfolioAdminEditor({
   const [activeTab, setActiveTab] = useState<AdminTab>('profile');
   const [content, setContent] = useState<PortfolioContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isSavingManual, setIsSavingManual] = useState(false);
+
+  const handleContentSaved = useCallback((updated: PortfolioContent): void => {
+    setContent(structuredClone(updated));
+  }, []);
+
+  const { status: saveStatus, statusMessage, saveNow } = useAdminAutoSave({
+    content,
+    isEnabled: canEditPortfolio,
+    onSaved: handleContentSaved,
+  });
 
   const loadContent = useCallback(async (): Promise<void> => {
     setIsLoading(true);
@@ -63,24 +95,15 @@ export function PortfolioAdminEditor({
     void loadContent();
   }, [loadContent]);
 
-  const handleSave = async (): Promise<void> => {
+  const handleSaveNow = async (): Promise<void> => {
     if (!content || !canEditPortfolio) {
       return;
     }
-    setIsSaving(true);
-    setStatusMessage(null);
+    setIsSavingManual(true);
     try {
-      const updated = await putAuthApi<PortfolioContent, { content: PortfolioContent }>(
-        '/admin/portfolio',
-        { content },
-      );
-      setContent(structuredClone(updated));
-      setStatusMessage('Saved. Refresh the public site to see updates.');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Save failed';
-      setStatusMessage(message);
+      await saveNow();
     } finally {
-      setIsSaving(false);
+      setIsSavingManual(false);
     }
   };
 
@@ -104,6 +127,8 @@ export function PortfolioAdminEditor({
     variant,
     onChange: setContent,
   };
+  const saveStatusLabel = getSaveStatusLabel(saveStatus, isSavingManual);
+  const isSaving = saveStatus === 'saving' || saveStatus === 'pending' || isSavingManual;
 
   return (
     <div className="space-y-6">
@@ -124,7 +149,8 @@ export function PortfolioAdminEditor({
         </div>
       ) : (
         <p className={cn('text-sm', isEnterprise ? 'text-zinc-600 dark:text-zinc-400' : 'text-zinc-400')}>
-          Each tab covers one part of the portfolio. Edit variable names and values, then save once.
+          Changes save automatically as you edit. Long text fields can be resized vertically to
+          read the full content.
         </p>
       )}
 
@@ -174,12 +200,38 @@ export function PortfolioAdminEditor({
         )}
       >
         {canEditPortfolio ? (
-          <Button variant="accent" onClick={() => void handleSave()} disabled={isSaving}>
-            <Save className="h-4 w-4" />
-            {isSaving ? 'Saving…' : 'Save changes'}
-          </Button>
+          <>
+            <div
+              className={cn(
+                'inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm',
+                saveStatus === 'error'
+                  ? 'border-red-300 text-red-700 dark:border-red-500/40 dark:text-red-300'
+                  : 'border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-300',
+              )}
+              aria-live="polite"
+            >
+              <CloudUpload className={cn('h-4 w-4', isSaving && 'animate-pulse')} aria-hidden="true" />
+              {saveStatusLabel}
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => void handleSaveNow()}
+              disabled={isSaving}
+            >
+              Save now
+            </Button>
+          </>
         ) : null}
-        {statusMessage ? <p className="text-sm text-zinc-400">{statusMessage}</p> : null}
+        {statusMessage ? (
+          <p
+            className={cn(
+              'text-sm',
+              saveStatus === 'error' ? 'text-red-500' : 'text-zinc-400',
+            )}
+          >
+            {statusMessage}
+          </p>
+        ) : null}
       </div>
     </div>
   );

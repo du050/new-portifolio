@@ -1,7 +1,7 @@
 import type { Experience, PortfolioContent } from '@portfolio/shared';
 import { AdminField } from '@/components/admin/admin-field';
 import { AdminSectionActions } from '@/components/admin/admin-section-actions';
-import { AdminVariableRow } from '@/components/admin/admin-variable-row';
+import { AdminFieldPair } from '@/components/admin/admin-variable-row';
 import { AdminSectionCard, AdminStringList } from '@/components/admin/admin-string-list';
 import { createEntityId } from '@/lib/admin-editor-utils';
 
@@ -46,16 +46,15 @@ export function PortfolioAdminExperienceSection({
     <section className="space-y-6">
       {content.experiences.map((item, index) => (
         <AdminSectionCard key={item.id} variant={variant}>
-          <AdminVariableRow
-            variableLabel="experiences.role"
-            variableValue={item.role}
-            valueLabel="experiences.company"
-            value={item.company}
+          <AdminFieldPair
+            leftLabel="experiences.role"
+            leftValue={item.role}
+            rightLabel="experiences.company"
+            rightValue={item.company}
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
-            onVariableChange={(role) => updateItem(index, { ...item, role })}
-            onValueChange={(company) => updateItem(index, { ...item, company })}
+            onLeftChange={(role) => updateItem(index, { ...item, role })}
+            onRightChange={(company) => updateItem(index, { ...item, company })}
           />
           <div className="grid gap-4 md:grid-cols-2">
             <AdminField label="experiences.location" value={item.location} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, location: v })} />
@@ -71,22 +70,21 @@ export function PortfolioAdminExperienceSection({
             />
             experiences.current
           </label>
-          <AdminField label="experiences.description" multiline value={item.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, description: v })} />
+          <AdminField label="experiences.description" multiline textareaSize="long" value={item.description} isReadOnly={isReadOnly} variant={variant} onChange={(v) => updateItem(index, { ...item, description: v })} />
           <AdminStringList
             title="Achievements"
             items={item.achievements}
-            variableLabel="achievements"
+            fieldLabel="achievements"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
+            multiline
             onChange={(achievements) => updateItem(index, { ...item, achievements })}
           />
           <AdminStringList
             title="Technologies"
             items={item.technologies}
-            variableLabel="technologies"
+            fieldLabel="technologies"
             isReadOnly={isReadOnly}
-            canEditVariable={canEditStructure}
             variant={variant}
             onChange={(technologies) => updateItem(index, { ...item, technologies })}
           />
