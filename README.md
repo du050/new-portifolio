@@ -48,9 +48,12 @@ Edit `apps/api/.env`:
 
 ```env
 DATABASE_URL=postgresql://portfolio:portfolio_secret@localhost:5432/portfolio_db
+JWT_SECRET=change-this-to-a-long-random-secret
 GITHUB_USERNAME=your-github-username
 GITHUB_TOKEN=           # optional — enables live GitHub stats
 ```
+
+The `DATABASE_URL` must match your Postgres instance (Docker Compose uses `portfolio` / `portfolio_secret` on port `5432`). Verify connectivity with `GET /api/health` (`database: connected`).
 
 ### 3. Start PostgreSQL
 
@@ -102,6 +105,36 @@ docker compose up --build
 | GET | `/api/portfolio/learning` | Learning paths |
 | GET | `/api/github/stats` | GitHub statistics (cached) |
 | POST | `/api/contact` | Submit contact form |
+| POST | `/api/auth/login` | Admin login (JWT) |
+| GET | `/api/auth/me` | Current user (Bearer token) |
+| GET | `/api/admin/portfolio` | Portfolio content for admin panel (authenticated) |
+| PUT | `/api/admin/portfolio` | Update portfolio content (**Super Admin** only) |
+| GET | `/api/admin/access` | Role capabilities for the signed-in user |
+| GET | `/api/admin/users` | List users (**Super Admin** only) |
+| POST | `/api/admin/users` | Create user (**Super Admin** only) |
+
+## RBAC & Admin Panel
+
+Three roles are stored in PostgreSQL (`users` table):
+
+| Role | Admin panel | Edit portfolio data | Manage users |
+|------|-------------|---------------------|--------------|
+| `STANDARD` | View (read-only) | No | No |
+| `ADMIN` | View (read-only) | No | No |
+| `SUPER_ADMIN` | Full edit | Yes | Yes |
+
+**Standard** and **Admin** have the same permissions (read-only showcase data). Only **Super Admin** can save changes from the UI.
+
+- Admin UI: http://localhost:5173/admin/login → http://localhost:5173/admin
+- After `npm run db:seed`, demo accounts:
+
+| Email | Password (default) | Role |
+|-------|-------------------|------|
+| `superadmin@portfolio.dev` | `SuperAdmin123!` | Super Admin |
+| `admin@portfolio.dev` | `Admin123!` | Admin |
+| `viewer@portfolio.dev` | `Viewer123!` | Standard |
+
+Override seed passwords with `SEED_SUPER_ADMIN_PASSWORD`, `SEED_ADMIN_PASSWORD`, and `SEED_VIEWER_PASSWORD` in `apps/api/.env`.
 
 ## Personalization
 
@@ -111,7 +144,7 @@ Edit portfolio content in:
 packages/shared/src/content/portfolio-seed.ts
 ```
 
-Update profile name, bio, projects, experience, and social links. Re-run seed after changes:
+Update profile name, bio, projects, experience, and social links. Re-run seed after changes, **or** sign in as Super Admin and edit via the admin panel (no manual DB edits required).
 
 ```bash
 npm run db:seed
@@ -125,6 +158,9 @@ Environment variables:
 | `GITHUB_USERNAME` | API | GitHub username for stats |
 | `GITHUB_TOKEN` | API | Personal access token (optional) |
 | `CORS_ORIGIN` | API | Allowed frontend origins |
+| `JWT_SECRET` | API | Secret for signing admin JWTs |
+| `JWT_EXPIRES_IN_SECONDS` | API | Token lifetime (default 7 days) |
+| `SEED_SUPER_ADMIN_PASSWORD` | API | Seed password for super admin |
 | `VITE_API_URL` | Web | API base URL |
 
 ## Production Build

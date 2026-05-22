@@ -17,9 +17,9 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "paths": {
-      "@portfolio/shared": ["../../packages/shared/src"]
+      "@portfolio/shared": ["../../packages/shared/dist"]
     }
   },
-  "include": ["src/**/*", "prisma/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

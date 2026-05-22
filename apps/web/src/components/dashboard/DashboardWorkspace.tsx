@@ -12,6 +12,7 @@ import {
   DashboardProjectsPanel,
   DashboardSkillsPanel,
 } from '@/components/dashboard/dashboard-tab-panels';
+import { DashboardAdminPanel } from '@/components/dashboard/DashboardAdminPanel';
 import { useDashboardTabStore } from '@/stores/use-dashboard-tab-store';
 
 interface DashboardWorkspaceProps {
@@ -61,6 +62,8 @@ export function DashboardWorkspace({
         return <DashboardAnalyticsPanel {...panelProps} />;
       case 'contact':
         return <DashboardContactPanel {...panelProps} />;
+      case 'admin':
+        return <DashboardAdminPanel />;
       default:
         return <DashboardOverviewPanel {...panelProps} />;
     }

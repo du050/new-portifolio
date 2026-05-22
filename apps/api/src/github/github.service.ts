@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { GitHubStats } from '@portfolio/shared';
-import { GITHUB_FALLBACK_STATS } from '../../prisma/seed-data';
+import { GITHUB_FALLBACK_STATS, type GitHubStats } from '@portfolio/shared';
 import { PrismaService } from '../prisma/prisma.service';
 
 interface GitHubApiUser {

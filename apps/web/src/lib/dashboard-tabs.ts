@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Mail,
   Route,
+  Shield,
   Sparkles,
   Table2,
   User,
@@ -20,7 +21,8 @@ export type DashboardTabId =
   | 'experience'
   | 'growth'
   | 'analytics'
-  | 'contact';
+  | 'contact'
+  | 'admin';
 
 export interface DashboardTabDefinition {
   readonly id: DashboardTabId;
@@ -39,6 +41,7 @@ export const DASHBOARD_TABS: readonly DashboardTabDefinition[] = [
   { id: 'growth', label: 'Growth', icon: Award, creativeSectionId: 'certifications' },
   { id: 'analytics', label: 'Analytics', icon: GitBranch, creativeSectionId: 'github' },
   { id: 'contact', label: 'Contact', icon: Mail, creativeSectionId: 'contact' },
+  { id: 'admin', label: 'Admin', icon: Shield, creativeSectionId: 'hero' },
 ] as const;
 
 export const DEFAULT_DASHBOARD_TAB: DashboardTabId = 'overview';

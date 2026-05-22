@@ -31,6 +31,8 @@ services:
       API_HOST: 0.0.0.0
       NODE_ENV: production
       CORS_ORIGIN: http://localhost:80,http://localhost:5173
+      JWT_SECRET: ${JWT_SECRET:-portfolio-docker-secret-change-in-production}
+      JWT_EXPIRES_IN_SECONDS: ${JWT_EXPIRES_IN_SECONDS:-604800}
       GITHUB_USERNAME: ${GITHUB_USERNAME:-octocat}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     depends_on:

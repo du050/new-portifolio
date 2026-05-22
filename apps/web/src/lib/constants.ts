@@ -1,4 +1,15 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
+function resolveApiBaseUrl(): string {
+  const configured = import.meta.env.VITE_API_URL as string | undefined;
+  if (!configured) {
+    return '/api';
+  }
+  if (import.meta.env.DEV && configured.includes('localhost:3001')) {
+    return '/api';
+  }
+  return configured;
+}
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export const NAV_ITEMS = [
   { label: 'About', href: '#about' },

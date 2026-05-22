@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type {
   Certification,
   Experience,
@@ -57,6 +57,27 @@ export class PortfolioService {
   async getLearningPaths(): Promise<readonly LearningPath[]> {
     const content = await this.loadContent();
     return content.learningPaths;
+  }
+
+  async updatePortfolioContent(content: PortfolioContent): Promise<PortfolioContent> {
+    if (!content.profile?.name) {
+      throw new BadRequestException('Portfolio content must include a profile with a name');
+    }
+
+    const snapshot = await this.prismaService.portfolioSnapshot.upsert({
+      where: { key: PORTFOLIO_KEY },
+      update: {
+        content: content as object,
+        version: { increment: 1 },
+      },
+      create: {
+        key: PORTFOLIO_KEY,
+        content: content as object,
+        version: 1,
+      },
+    });
+
+    return snapshot.content as unknown as PortfolioContent;
   }
 
   private async loadContent(): Promise<PortfolioContent> {
