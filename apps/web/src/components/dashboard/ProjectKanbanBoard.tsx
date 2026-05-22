@@ -16,8 +16,8 @@ export function ProjectKanbanBoard({
   cards,
 }: ProjectKanbanBoardProps): React.JSX.Element {
   return (
-    <Card className="border-border/80">
-      <CardHeader className="pb-3">
+    <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <CardTitle className="text-sm font-semibold">Delivery Board</CardTitle>
       </CardHeader>
       <CardContent>
@@ -27,13 +27,13 @@ export function ProjectKanbanBoard({
             return (
               <div
                 key={column.id}
-                className="rounded-xl border border-border bg-muted/30 p-3"
+                className="rounded-md border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950/50"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                     {column.label}
                   </p>
-                  <span className="rounded-full bg-background px-2 py-0.5 font-mono text-[10px]">
+                  <span className="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] dark:bg-zinc-900">
                     {columnCards.length}
                   </span>
                 </div>
@@ -41,10 +41,10 @@ export function ProjectKanbanBoard({
                   {columnCards.map((card) => (
                     <div
                       key={card.id}
-                      className="rounded-lg border border-border bg-card p-3 shadow-sm"
+                      className="rounded-md border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                     >
                       <p className="text-sm font-medium leading-snug">{card.title}</p>
-                      <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      <p className="mt-1 text-[10px] uppercase tracking-wider text-zinc-500">
                         {card.tag}
                       </p>
                     </div>

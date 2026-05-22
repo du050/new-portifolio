@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/Badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import type { DashboardProjectRow } from '@/lib/dashboard-data';
 import { cn } from '@/lib/utils';
@@ -18,33 +17,36 @@ export function ProjectOperationsTable({
   rows,
 }: ProjectOperationsTableProps): React.JSX.Element {
   return (
-    <Card className="border-border/80">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold">Project Operations</CardTitle>
+    <Card className="overflow-hidden rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle className="text-sm font-semibold">Project Operations</CardTitle>
+          <span className="text-xs text-zinc-500">{rows.length} records</span>
+        </div>
       </CardHeader>
-      <CardContent className="overflow-x-auto p-0 pb-2">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead>
-            <tr className="border-b border-border text-xs text-muted-foreground">
-              <th className="px-4 py-2 font-medium">Initiative</th>
-              <th className="px-4 py-2 font-medium">Status</th>
-              <th className="px-4 py-2 font-medium">Stack</th>
-              <th className="px-4 py-2 font-medium">Impact</th>
-              <th className="px-4 py-2 font-medium">Owner</th>
-              <th className="px-4 py-2 font-medium">Risk</th>
+      <CardContent className="overflow-x-auto p-0">
+        <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+          <thead className="bg-zinc-50 dark:bg-zinc-950/60">
+            <tr className="border-b border-zinc-200 text-xs text-zinc-500 dark:border-zinc-800">
+              <th className="px-4 py-3 font-medium">Initiative</th>
+              <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Stack</th>
+              <th className="px-4 py-3 font-medium">Impact</th>
+              <th className="px-4 py-3 font-medium">Owner</th>
+              <th className="px-4 py-3 font-medium">Risk</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr
                 key={row.id}
-                className="border-b border-border/60 transition-colors hover:bg-muted/40"
+                className="border-b border-zinc-100 transition-colors last:border-0 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/50"
               >
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">
                   <p className="font-medium">{row.name}</p>
-                  <p className="text-xs text-muted-foreground">{row.category}</p>
+                  <p className="text-xs text-zinc-500">{row.category}</p>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3.5">
                   <span
                     className={cn(
                       'inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize',
@@ -54,13 +56,13 @@ export function ProjectOperationsTable({
                     {row.status.replace('_', ' ')}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">{row.stack}</td>
-                <td className="px-4 py-3 font-mono text-xs">{row.impact}</td>
-                <td className="px-4 py-3 text-xs">{row.owner}</td>
-                <td className="px-4 py-3">
-                  <Badge variant="outline" className="capitalize">
+                <td className="px-4 py-3.5 text-xs text-zinc-500">{row.stack}</td>
+                <td className="px-4 py-3.5 font-mono text-xs">{row.impact}</td>
+                <td className="px-4 py-3.5 text-xs">{row.owner}</td>
+                <td className="px-4 py-3.5">
+                  <span className="rounded-full border border-zinc-200 px-2 py-0.5 text-xs capitalize text-zinc-600 dark:border-zinc-700 dark:text-zinc-300">
                     {row.risk}
-                  </Badge>
+                  </span>
                 </td>
               </tr>
             ))}

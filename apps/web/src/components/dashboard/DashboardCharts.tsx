@@ -35,8 +35,8 @@ export function DashboardCharts({
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <Card className="border-border/80">
-        <CardHeader className="pb-2">
+      <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <CardTitle className="text-sm font-semibold">Commit Throughput</CardTitle>
         </CardHeader>
         <CardContent>
@@ -71,8 +71,8 @@ export function DashboardCharts({
         </CardContent>
       </Card>
 
-      <Card className="border-border/80">
-        <CardHeader className="pb-2">
+      <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <CardTitle className="text-sm font-semibold">Language Mix</CardTitle>
         </CardHeader>
         <CardContent>

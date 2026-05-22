@@ -16,19 +16,19 @@ const TYPE_ICONS: Record<ActivityItem['type'], React.ElementType> = {
 
 export function ActivityFeed({ items }: ActivityFeedProps): React.JSX.Element {
   return (
-    <Card className="border-border/80">
-      <CardHeader className="pb-3">
+    <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <CardTitle className="text-sm font-semibold">Activity Feed</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="divide-y divide-zinc-100 p-0 dark:divide-zinc-800">
         {items.map((item) => {
           const Icon = TYPE_ICONS[item.type];
           return (
             <div
               key={item.id}
-              className="flex gap-3 rounded-lg border border-border/70 bg-muted/20 p-3"
+              className="flex gap-3 px-4 py-3"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-indigo-500/10">
                 <Icon className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
               </div>
               <div className="min-w-0 flex-1">
@@ -38,7 +38,7 @@ export function ActivityFeed({ items }: ActivityFeedProps): React.JSX.Element {
                     {item.timestamp}
                   </span>
                 </div>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-zinc-500">
                   {item.detail}
                 </p>
               </div>

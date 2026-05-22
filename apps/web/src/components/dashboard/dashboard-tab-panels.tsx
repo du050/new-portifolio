@@ -2,28 +2,16 @@ import type {
   Certification,
   Experience,
   GitHubStats,
-  LearningPath,
   PortfolioContent,
   Project,
-  SkillCategory,
 } from '@portfolio/shared';
-import {
-  ArrowUpRight,
-  CheckCircle,
-  Github,
-  GraduationCap,
-  Linkedin,
-  Mail,
-  MapPin,
-  Send,
-} from 'lucide-react';
+import { ArrowUpRight, CheckCircle, Github, Linkedin, Mail, Send } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { DashboardMetricCard } from '@/components/dashboard/DashboardMetricCard';
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader';
-import { MonitoringPanel } from '@/components/dashboard/MonitoringPanel';
 import { ProjectKanbanBoard } from '@/components/dashboard/ProjectKanbanBoard';
 import { ProjectOperationsTable } from '@/components/dashboard/ProjectOperationsTable';
 import { Badge } from '@/components/ui/Badge';
@@ -73,6 +61,23 @@ function formatExperienceDate(date: string | null): string {
   return `${months[Number(month) - 1] ?? month} ${year}`;
 }
 
+function EnterpriseCard({
+  title,
+  children,
+}: {
+  readonly title: string;
+  readonly children: React.ReactNode;
+}): React.JSX.Element {
+  return (
+    <Card className="overflow-hidden rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <CardHeader className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">{children}</CardContent>
+    </Card>
+  );
+}
+
 export function DashboardOverviewPanel({
   portfolio,
   githubStats,
@@ -82,55 +87,30 @@ export function DashboardOverviewPanel({
   const profile = portfolio?.profile;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="overview"
         description={
           profile
-            ? `${profile.headline} — ${profile.subheadline}`
-            : 'Operations summary across delivery, platform health, and engineering signals.'
+            ? `${profile.title} dashboard view for portfolio, projects, skills, experience, and platform signals.`
+            : 'Operational summary for portfolio content, delivery, and engineering signals.'
         }
       />
 
-      {profile && (
-        <Card className="border-indigo-200/60 bg-gradient-to-r from-indigo-50 to-white dark:border-indigo-500/20 dark:from-indigo-500/10 dark:to-zinc-900">
-          <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-zinc-500">Profile record</p>
-              <h2 className="text-xl font-bold">{profile.name}</h2>
-              <p className="text-sm text-indigo-700 dark:text-indigo-300">{profile.title}</p>
-              <p className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{profile.bio}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">{profile.location}</Badge>
-              {profile.resumeUrl && (
-                <a href={profile.resumeUrl} download>
-                  <Button variant="outline" size="sm">
-                    Resume
-                  </Button>
-                </a>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        {dashboardData.metrics.map((metric) => (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {dashboardData.metrics.slice(0, 4).map((metric) => (
           <DashboardMetricCard key={metric.id} metric={metric} />
         ))}
       </div>
 
-      <DashboardCharts githubStats={githubStats} isLoading={isLoading} />
-
       <div className="grid gap-4 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <ProjectOperationsTable rows={dashboardData.projectRows.slice(0, 5)} />
+          <ProjectOperationsTable rows={dashboardData.projectRows.slice(0, 6)} />
         </div>
-        <ActivityFeed items={dashboardData.activity.slice(0, 5)} />
+        <ActivityFeed items={dashboardData.activity.slice(0, 4)} />
       </div>
 
-      <MonitoringPanel services={dashboardData.services} logs={dashboardData.logs.slice(0, 4)} />
+      <DashboardCharts githubStats={githubStats} isLoading={isLoading} />
     </div>
   );
 }
@@ -152,120 +132,94 @@ export function DashboardProfilePanel({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="profile"
-        description="Same profile and about narrative as creative mode, presented as a personnel record."
+        description="Professional profile record with the same narrative as the creative portfolio."
       />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="border-border/80 lg:col-span-1">
-          <CardContent className="p-5">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-500/10 font-mono text-2xl font-bold text-indigo-700 dark:text-indigo-300">
-              {profile.name
-                .split(' ')
-                .map((part) => part[0])
-                .join('')}
-            </div>
-            <h2 className="text-lg font-semibold">{profile.name}</h2>
-            <p className="text-sm text-indigo-600 dark:text-indigo-300">{profile.title}</p>
-            <p className="mt-3 flex items-center gap-1.5 text-sm text-zinc-500">
-              <MapPin className="h-3.5 w-3.5" />
-              {profile.location}
-            </p>
-            <a href={`mailto:${profile.email}`} className="mt-2 flex items-center gap-1.5 text-sm text-indigo-600">
-              <Mail className="h-3.5 w-3.5" />
-              {profile.email}
-            </a>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              {[
-                { label: 'Signature', value: 'Craft + systems' },
-                { label: 'Focus', value: 'Full-stack DevOps' },
-                { label: 'Energy', value: 'Detail obsessed' },
-                { label: 'Edge', value: 'UX-aware backend' },
-              ].map((stat) => (
-                <div key={stat.label} className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-                  <p className="text-[10px] text-zinc-500">{stat.label}</p>
-                  <p className="text-xs font-medium">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/80 lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-sm">About narrative</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {profile.aboutParagraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 40)} className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                {paragraph}
-              </p>
+      <EnterpriseCard title="Profile Details">
+        <table className="w-full text-left text-sm">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {[
+              ['Name', profile.name],
+              ['Title', profile.title],
+              ['Location', profile.location],
+              ['Email', profile.email],
+              ['Focus', profile.bio],
+            ].map(([label, value]) => (
+              <tr key={label}>
+                <th className="w-40 bg-zinc-50 px-4 py-3 text-xs font-medium text-zinc-500 dark:bg-zinc-950/50">
+                  {label}
+                </th>
+                <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{value}</td>
+              </tr>
             ))}
-          </CardContent>
-        </Card>
-      </div>
+          </tbody>
+        </table>
+      </EnterpriseCard>
+
+      <EnterpriseCard title="About Narrative">
+        <table className="w-full text-left text-sm">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {profile.aboutParagraphs.map((paragraph, index) => (
+              <tr key={paragraph.slice(0, 40)}>
+                <td className="w-24 px-4 py-3 font-mono text-xs text-zinc-500">
+                  P{index + 1}
+                </td>
+                <td className="px-4 py-3 leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  {paragraph}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </EnterpriseCard>
     </div>
   );
 }
 
 export function DashboardProcessPanel(_props: DashboardPanelsProps): React.JSX.Element {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="process"
-        description="Working style and product judgment — identical to the creative Process section."
+        description="Operating model shown as workflow records instead of marketing cards."
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {WORKFLOW_ITEMS.map((item, index) => (
-          <Card key={item.title} className="border-border/80">
-            <CardContent className="p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10">
-                  <item.icon className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
-                </div>
-                <span className="font-mono text-[10px] text-zinc-500">0{index + 1}</span>
-              </div>
-              <h3 className="font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{item.description}</p>
-              <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-indigo-600 dark:text-indigo-300">
-                {item.signal}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <EnterpriseCard title="Workflow Stages">
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="bg-zinc-50 text-xs text-zinc-500 dark:bg-zinc-950/60">
+            <tr>
+              <th className="px-4 py-3 font-medium">Stage</th>
+              <th className="px-4 py-3 font-medium">Operating Behavior</th>
+              <th className="px-4 py-3 font-medium">Signal</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {WORKFLOW_ITEMS.map((item, index) => (
+              <tr key={item.title}>
+                <td className="px-4 py-3 font-medium">0{index + 1}. {item.title}</td>
+                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{item.description}</td>
+                <td className="px-4 py-3 text-xs text-indigo-600 dark:text-indigo-300">{item.signal}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </EnterpriseCard>
 
-      <Card className="border-border/80">
-        <CardHeader>
-          <CardTitle className="text-sm">Differentiators</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {WORKFLOW_CALLOUTS.map((callout) => (
-            <p key={callout} className="rounded-lg bg-zinc-100 px-3 py-2 text-sm dark:bg-zinc-800">
-              {callout}
-            </p>
-          ))}
-        </CardContent>
-      </Card>
+      <EnterpriseCard title="Differentiators">
+        <table className="w-full text-left text-sm">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {WORKFLOW_CALLOUTS.map((callout) => (
+              <tr key={callout}>
+                <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{callout}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </EnterpriseCard>
     </div>
-  );
-}
-
-function SkillCategoryCard({ category }: { readonly category: SkillCategory }): React.JSX.Element {
-  return (
-    <Card className="border-border/80">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm">{category.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {category.skills.map((skill) => (
-          <ProgressBar key={skill.name} label={skill.name} value={skill.level} />
-        ))}
-      </CardContent>
-    </Card>
   );
 }
 
@@ -283,24 +237,43 @@ export function DashboardSkillsPanel({
     ) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="skills"
-        description="Full skill inventory from creative mode, organized by capability domain."
+        description="Full skill inventory as a capability matrix."
       />
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-40" />
-          ))}
-        </div>
+        <Skeleton className="h-80 w-full" />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <SkillCategoryCard key={category.id} category={category} />
-          ))}
-        </div>
+        <EnterpriseCard title="Capability Matrix">
+          <table className="w-full min-w-[720px] text-left text-sm">
+            <thead className="bg-zinc-50 text-xs text-zinc-500 dark:bg-zinc-950/60">
+              <tr>
+                <th className="px-4 py-3 font-medium">Domain</th>
+                <th className="px-4 py-3 font-medium">Skill</th>
+                <th className="px-4 py-3 font-medium">Level</th>
+                <th className="px-4 py-3 font-medium">Experience</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {categories.flatMap((category) =>
+                category.skills.map((skill) => (
+                  <tr key={`${category.id}-${skill.name}`}>
+                    <td className="px-4 py-3 font-medium">{category.name}</td>
+                    <td className="px-4 py-3 text-zinc-700 dark:text-zinc-300">{skill.name}</td>
+                    <td className="px-4 py-3 min-w-[220px]">
+                      <ProgressBar value={skill.level} />
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">
+                      {skill.years ? `${skill.years} yrs` : 'Project-based'}
+                    </td>
+                  </tr>
+                )),
+              )}
+            </tbody>
+          </table>
+        </EnterpriseCard>
       )}
     </div>
   );
@@ -327,64 +300,61 @@ export function DashboardProjectsPanel({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="projects"
-        description="All portfolio projects with operations table, delivery board, and detail records."
+        description="Project portfolio shown as operating records and architecture decisions."
       />
 
       <ProjectOperationsTable rows={filteredRows} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectDetailCard key={project.id} project={project} />
-        ))}
-      </div>
+      <EnterpriseCard title="Architecture Decisions">
+        <table className="w-full min-w-[820px] text-left text-sm">
+          <thead className="bg-zinc-50 text-xs text-zinc-500 dark:bg-zinc-950/60">
+            <tr>
+              <th className="px-4 py-3 font-medium">Project</th>
+              <th className="px-4 py-3 font-medium">Decision</th>
+              <th className="px-4 py-3 font-medium">Scale Consideration</th>
+              <th className="px-4 py-3 font-medium">Record</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {projects.map((project) => (
+              <ProjectDecisionRow key={project.id} project={project} />
+            ))}
+          </tbody>
+        </table>
+      </EnterpriseCard>
 
       <ProjectKanbanBoard cards={filteredKanban.length > 0 ? filteredKanban : dashboardData.kanbanCards} />
     </div>
   );
 }
 
-function ProjectDetailCard({ project }: { readonly project: Project }): React.JSX.Element {
+function ProjectDecisionRow({ project }: { readonly project: Project }): React.JSX.Element {
   return (
-    <Card className="border-border/80">
-      <CardContent className="p-5">
-        <div className="mb-2 flex flex-wrap gap-1">
+    <tr>
+      <td className="px-4 py-3">
+        <p className="font-medium">{project.title}</p>
+        <div className="mt-1 flex flex-wrap gap-1">
           <Badge variant="accent">{project.category}</Badge>
-          {project.techStack.slice(0, 3).map((tech) => (
-            <Badge key={tech} variant="outline">
-              {tech}
-            </Badge>
-          ))}
         </div>
-        <h3 className="font-semibold">{project.title}</h3>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{project.description}</p>
-        <div className="mt-3 flex flex-wrap gap-3">
-          {project.metrics.map((metric) => (
-            <div key={metric.label}>
-              <p className="font-mono text-sm font-bold">{metric.value}</p>
-              <p className="text-[10px] text-zinc-500">{metric.label}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex gap-2">
-          <Link to={`/projects/${project.slug}`}>
-            <Button variant="outline" size="sm">
-              Open record
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
-          {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" size="icon">
-                <Github className="h-4 w-4" />
-              </Button>
-            </a>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      </td>
+      <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+        {project.architecture[0] ?? project.description}
+      </td>
+      <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+        {project.scalability[0] ?? project.metrics[0]?.value}
+      </td>
+      <td className="px-4 py-3">
+        <Link to={`/projects/${project.slug}`}>
+          <Button variant="outline" size="sm">
+            Open
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Button>
+        </Link>
+      </td>
+    </tr>
   );
 }
 
@@ -402,23 +372,23 @@ export function DashboardExperiencePanel({
     ) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="experience"
-        description="Career timeline from creative mode, formatted as enterprise experience records."
+        description="Career timeline formatted as employment records."
       />
 
       {isLoading ? (
         <Skeleton className="h-64 w-full" />
       ) : (
-        <Card className="border-border/80 overflow-x-auto">
+        <Card className="overflow-hidden rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 text-xs text-zinc-500 dark:border-zinc-800">
+              <tr className="border-b border-zinc-200 bg-zinc-50 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/60">
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3">Company</th>
                 <th className="px-4 py-3">Period</th>
-                <th className="px-4 py-3">Highlights</th>
+                <th className="px-4 py-3">Primary Highlight</th>
                 <th className="px-4 py-3">Stack</th>
               </tr>
             </thead>
@@ -458,11 +428,7 @@ function ExperienceTableRow({
         {formatExperienceDate(experience.startDate)} — {formatExperienceDate(experience.endDate)}
       </td>
       <td className="px-4 py-4 max-w-xs text-xs text-zinc-600 dark:text-zinc-400">
-        <ul className="space-y-1">
-          {experience.achievements.slice(0, 2).map((item) => (
-            <li key={item}>• {item}</li>
-          ))}
-        </ul>
+        {experience.achievements[0] ?? experience.description}
       </td>
       <td className="px-4 py-4">
         <div className="flex flex-wrap gap-1">
@@ -491,63 +457,67 @@ export function DashboardGrowthPanel({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="growth"
-        description="Certifications and learning paths — same content as the creative Growth section."
+        description="Certification and learning progress shown as professional development records."
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Certifications</h2>
+        <EnterpriseCard title="Certifications">
           {isLoading
-            ? Array.from({ length: 2 }).map((_, index) => <Skeleton key={index} className="h-28" />)
-            : certifications.map((cert) => (
-                <Card key={cert.id} className="border-border/80">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-medium">{cert.name}</h3>
-                      <Badge variant="accent">{STATUS_LABEL[cert.status]}</Badge>
-                    </div>
-                    <p className="mt-1 text-xs text-zinc-500">{cert.issuer}</p>
-                    <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{cert.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-        </div>
+            ? <Skeleton className="m-4 h-28" />
+            : (
+              <table className="w-full text-left text-sm">
+                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                  {certifications.map((cert) => (
+                    <CertificationRow key={cert.id} cert={cert} label={STATUS_LABEL[cert.status]} />
+                  ))}
+                </tbody>
+              </table>
+            )}
+        </EnterpriseCard>
 
-        <div className="space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Learning paths</h2>
-          {learningPaths.map((path) => (
-            <LearningPathCard key={path.id} path={path} />
-          ))}
-        </div>
+        <EnterpriseCard title="Learning Paths">
+          <table className="w-full text-left text-sm">
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {learningPaths.map((path) => (
+                <tr key={path.id}>
+                  <td className="px-4 py-3">
+                    <p className="font-medium">{path.title}</p>
+                    <p className="mt-1 text-xs text-zinc-500">{path.description}</p>
+                  </td>
+                  <td className="w-48 px-4 py-3">
+                    <ProgressBar value={path.progress} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </EnterpriseCard>
       </div>
     </div>
   );
 }
 
-function LearningPathCard({ path }: { readonly path: LearningPath }): React.JSX.Element {
+function CertificationRow({
+  cert,
+  label,
+}: {
+  readonly cert: Certification;
+  readonly label: string;
+}): React.JSX.Element {
   return (
-    <Card className="border-border/80">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-2">
-          <GraduationCap className="h-4 w-4 text-indigo-600" />
-          <h3 className="font-medium">{path.title}</h3>
-        </div>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{path.description}</p>
-        <div className="mt-3">
-          <ProgressBar value={path.progress} label="Progress" />
-        </div>
-        <div className="mt-3 flex flex-wrap gap-1">
-          {path.topics.map((topic) => (
-            <Badge key={topic} variant="outline">
-              {topic}
-            </Badge>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <tr>
+      <td className="px-4 py-3">
+        <p className="font-medium">{cert.name}</p>
+        <p className="mt-1 text-xs text-zinc-500">{cert.issuer}</p>
+      </td>
+      <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{cert.description}</td>
+      <td className="px-4 py-3">
+        <Badge variant="accent">{label}</Badge>
+      </td>
+    </tr>
   );
 }
 
@@ -559,10 +529,10 @@ export function DashboardAnalyticsPanel({
   const dashboardData = buildDashboardData({ portfolio, githubStats });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="analytics"
-        description="GitHub activity, language distribution, and repository signals from creative mode."
+        description="GitHub and coding signals displayed as analytics records."
       />
 
       {githubStats && (
@@ -573,7 +543,7 @@ export function DashboardAnalyticsPanel({
             { label: 'Followers', value: githubStats.followers },
             { label: 'Commits', value: githubStats.totalCommits.toLocaleString() },
           ].map((stat) => (
-            <Card key={stat.label} className="border-border/80 text-center">
+            <Card key={stat.label} className="rounded-md border-zinc-200 bg-white text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
               <CardContent className="pt-5">
                 <p className="font-mono text-2xl font-bold">{stat.value}</p>
                 <p className="mt-1 text-xs text-zinc-500">{stat.label}</p>
@@ -586,28 +556,32 @@ export function DashboardAnalyticsPanel({
       <DashboardCharts githubStats={githubStats} isLoading={isLoading} />
 
       {githubStats && githubStats.topRepositories.length > 0 && (
-        <Card className="border-border/80">
-          <CardHeader>
-            <CardTitle className="text-sm">Top repositories</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-2">
-            {githubStats.topRepositories.map((repo) => (
-              <a
-                key={repo.name}
-                href={repo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg border border-zinc-200 p-3 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800"
-              >
-                <p className="font-mono text-sm font-semibold text-indigo-600">{repo.name}</p>
-                <p className="mt-1 text-xs text-zinc-500">{repo.description}</p>
-                <p className="mt-2 text-[10px] text-zinc-400">
-                  {repo.language} · {repo.stars} stars
-                </p>
-              </a>
-            ))}
-          </CardContent>
-        </Card>
+        <EnterpriseCard title="Top Repositories">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-zinc-50 text-xs text-zinc-500 dark:bg-zinc-950/60">
+              <tr>
+                <th className="px-4 py-3 font-medium">Repository</th>
+                <th className="px-4 py-3 font-medium">Description</th>
+                <th className="px-4 py-3 font-medium">Language</th>
+                <th className="px-4 py-3 font-medium">Stars</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {githubStats.topRepositories.map((repo) => (
+                <tr key={repo.name}>
+                  <td className="px-4 py-3 font-mono text-indigo-600">
+                    <a href={repo.url} target="_blank" rel="noopener noreferrer">
+                      {repo.name}
+                    </a>
+                  </td>
+                  <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{repo.description}</td>
+                  <td className="px-4 py-3 text-xs">{repo.language}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{repo.stars}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </EnterpriseCard>
       )}
 
       <ActivityFeed items={dashboardData.activity.filter((item) => item.type === 'commit')} />
@@ -632,14 +606,14 @@ export function DashboardContactPanel({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <DashboardPageHeader
         tabId="contact"
-        description="Same contact channels and form as creative mode, inside a CRM-style outreach panel."
+        description="CRM-style contact record and outreach form."
       />
 
       <div className="grid gap-6 lg:grid-cols-5">
-        <Card className="border-border/80 lg:col-span-2">
+        <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-2">
           <CardContent className="space-y-4 p-5">
             <h2 className="font-semibold">Reach out</h2>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -674,7 +648,7 @@ export function DashboardContactPanel({
           </CardContent>
         </Card>
 
-        <Card className="border-border/80 lg:col-span-3">
+        <Card className="rounded-md border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 lg:col-span-3">
           <CardContent className="p-5">
             {isSuccess ? (
               <div className="flex flex-col items-center py-10 text-center">
