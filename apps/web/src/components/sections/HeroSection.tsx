@@ -63,7 +63,7 @@ export function HeroSection({ profile, isLoading }: HeroSectionProps): React.JSX
               <>
                 <div className="inline-flex items-center gap-2 rounded-full border border-pink-300/30 bg-pink-100/60 px-3 py-1 text-xs font-medium text-pink-900 dark:bg-pink-400/10 dark:text-pink-100">
                   <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-                  {profile?.title ?? 'Full-Stack Software Engineer'}
+                  {profile?.title ?? 'Full-Stack Developer'}
                 </div>
                 <h1 className="max-w-3xl text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl lg:text-7xl">
                   {profile?.headline ?? 'Building resilient systems'}
@@ -73,9 +73,9 @@ export function HeroSection({ profile, isLoading }: HeroSectionProps): React.JSX
                 </p>
                 <div className="grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
                   {[
-                    { label: 'Design taste', value: 'interfaces with intention' },
-                    { label: 'Systems mind', value: 'backend + infra clarity' },
-                    { label: 'Delivery style', value: 'calm, polished execution' },
+                    { label: 'Design', value: 'clear, intentional UI' },
+                    { label: 'Backend', value: 'NestJS & REST APIs' },
+                    { label: 'Learning', value: 'deployments & Docker' },
                   ].map((item) => (
                     <motion.div
                       key={item.label}

@@ -38,7 +38,7 @@ export function CertificationsSection({
         <SectionHeading
           label="Growth"
           title="Certifications & continuous learning"
-          description="Investing in cloud architecture, platform engineering, and operational excellence."
+          description="Formal learning alongside day-to-day full-stack practice — cloud and containers at a fundamentals level."
         />
 
         {isLoading ? (

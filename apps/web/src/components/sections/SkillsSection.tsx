@@ -66,8 +66,8 @@ export function SkillsSection({
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           label="Skills"
-          title="A polished toolkit for product and platform work"
-          description="Categorized around outcomes: interfaces people trust, APIs teams can scale, and infrastructure that behaves predictably."
+          title="What I work with today — and what I am learning next"
+          description="Strongest in UI, TypeScript, NestJS, REST, and PostgreSQL; actively studying Docker, CI/CD, and deployment basics."
         />
 
         {isLoading ? (

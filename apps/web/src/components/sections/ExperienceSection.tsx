@@ -37,7 +37,7 @@ export function ExperienceSection({
         <SectionHeading
           label="Experience"
           title="Career journey"
-          description="From software development to cloud-native engineering — continuous growth across the stack."
+          description="Hands-on full-stack delivery — with room to grow on deployments alongside stronger product and API work."
         />
 
         {isLoading ? (

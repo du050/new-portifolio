@@ -4,15 +4,15 @@
  */
 export const PORTFOLIO_OWNER = {
   name: 'Maria Xavier',
-  title: 'Full-Stack Software Engineer',
-  headline: 'Designing scalable systems, intuitive experiences, and operationally sound products',
+  title: 'Full-Stack Developer',
+  headline: 'Thoughtful interfaces, solid APIs, and clean full-stack code',
   subheadline:
-    'Full-stack engineer specializing in TypeScript ecosystems, product architecture, and building solutions that balance usability, maintainability, and business goals.',
+    'I build with React, TypeScript, NestJS, REST APIs, and PostgreSQL — with a strong eye for design and SOLID, maintainable development. I am actively studying deployments and DevOps basics.',
   location: 'Calgary, Canada - Open to Remote/Hybrid',
   email: 'mariacxavier5@outlook.com',
   avatarUrl: '/avatar.svg',
   resumeUrl: '/resume.pdf',
-  bio: 'Full-stack software engineer focused on building structured, scalable systems that combine strong engineering foundations with thoughtful product design.',
+  bio: 'Full-stack developer who enjoys UI design, clear API boundaries, and structured code — currently growing into deployments, Docker, and CI/CD.',
   githubUsername: 'du050',
   socialLinks: [
     { platform: 'GitHub', url: 'https://github.com/du050', icon: 'github' },
@@ -20,18 +20,16 @@ export const PORTFOLIO_OWNER = {
   ],
 } as const;
 
-export const PORTFOLIO_OWNER_ABOUT_PARAGRAPHS = [
-  'I am a full-stack software engineer with experience building applications across React, NestJS, PostgreSQL, and modern cloud-native tooling. I enjoy transforming complex requirements into structured, maintainable systems that are intuitive for both users and teams.',
-  
-  'Beyond implementation, I focus on architecture, workflows, and operational visibility. From designing scalable interfaces to building observability dashboards and internal tooling, I enjoy creating systems that help organizations operate more efficiently and make better decisions.',
-  
-  'I am particularly interested in the intersection of technology, business processes, and innovation. My goal is not only to build software, but to create solutions that improve how teams collaborate, adapt, and grow.'
+export const PORTFOLIO_OWNER_ABOUT_PARAGRAPHS: readonly string[] = [
+  'I am a full-stack developer with hands-on experience in React, TypeScript, NestJS, REST APIs, and PostgreSQL. I care about readable code, sensible folder structure, and features that feel good to use — not just code that compiles.',
+  'Design matters to me: layout, spacing, and clear user flows are part of how I work, alongside backend work like DTOs, validation, Prisma models, and SOLID-friendly service layers. I like when the frontend and API tell a consistent story.',
+  'Deployments and DevOps are areas I  have experience in and am studying now — Docker, CI concepts, and what healthy releases look like. This portfolio includes a dashboard-style project (more enterprise-focused) where I practice those concepts in the UI while my main strength stays full-stack product development.',
 ] as const;
 
 export const PORTFOLIO_HTML_META = {
   title: `${PORTFOLIO_OWNER.name} | ${PORTFOLIO_OWNER.title}`,
-  description: `${PORTFOLIO_OWNER.name} — ${PORTFOLIO_OWNER.title} portfolio with full-stack projects, architecture, and operational excellence.`,
+  description: `${PORTFOLIO_OWNER.name} — ${PORTFOLIO_OWNER.title} portfolio focused on design, React, NestJS, REST APIs, PostgreSQL, and SOLID development.`,
   ogTitle: `${PORTFOLIO_OWNER.name} | ${PORTFOLIO_OWNER.title}`,
   ogDescription:
-    'Full-stack software engineer portfolio — designing scalable systems, intuitive experiences, and operationally sound products.',
+    'Full-stack developer portfolio — UI design, TypeScript, NestJS, PostgreSQL, and honest growth into deployments and DevOps.',
 } as const;

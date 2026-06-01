@@ -17,7 +17,7 @@ export function AboutSection({ profile, isLoading }: AboutSectionProps): React.J
         <SectionHeading
           label="About"
           title="Soft visuals, serious engineering"
-          description="A calm, product-aware engineering style: elegant interfaces, resilient systems, and infrastructure that supports real teams."
+          description="Design-aware full-stack development — clear interfaces, structured APIs, and honest growth into deployments."
         />
 
         <div className="grid gap-8 lg:grid-cols-5">
@@ -60,10 +60,10 @@ export function AboutSection({ profile, isLoading }: AboutSectionProps): React.J
               )}
               <div className="mt-6 grid grid-cols-2 gap-3 border-t border-border pt-6">
                 {[
-                  { label: 'Signature', value: 'Craft + systems' },
-                  { label: 'Focus', value: 'Full-stack DevOps' },
-                  { label: 'Energy', value: 'Detail obsessed' },
-                  { label: 'Edge', value: 'UX-aware backend' },
+                  { label: 'Signature', value: 'Design + code' },
+                  { label: 'Focus', value: 'Full-stack TS' },
+                  { label: 'Strength', value: 'REST & Postgres' },
+                  { label: 'Growing', value: 'Deployments' },
                 ].map((stat) => (
                   <div key={stat.label} className="rounded-2xl bg-background/55 p-3">
                     <p className="text-xs text-muted-foreground">{stat.label}</p>

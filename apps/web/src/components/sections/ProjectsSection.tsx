@@ -34,8 +34,8 @@ export function ProjectsSection({
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           label="Project"
-          title="A flagship build that shows how I think about production systems"
-          description="One focused project — an observability workspace with live telemetry, pipelines, and operational panels, built to demonstrate full-stack craft and growing DevOps awareness."
+          title="A full-stack portfolio I designed and built end to end"
+          description="One main project — creative portfolio plus a dashboard mode with charts and status panels, while I study deployments and keep my strongest work in frontend, APIs, and PostgreSQL."
         />
 
         {isLoading ? (
