@@ -63,7 +63,7 @@ export function HeroSection({ profile, isLoading }: HeroSectionProps): React.JSX
               <>
                 <div className="inline-flex items-center gap-2 rounded-full border border-pink-300/30 bg-pink-100/60 px-3 py-1 text-xs font-medium text-pink-900 dark:bg-pink-400/10 dark:text-pink-100">
                   <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-                  Product-minded full-stack + cloud engineer
+                  {profile?.title ?? 'Full-Stack Software Engineer'}
                 </div>
                 <h1 className="max-w-3xl text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl lg:text-7xl">
                   {profile?.headline ?? 'Building resilient systems'}

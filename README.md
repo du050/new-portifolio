@@ -145,13 +145,13 @@ Then `npm run db:seed`. Super Admin is not available from quick-sign-in buttons 
 
 ## Personalization
 
-Edit portfolio content in:
+Edit your identity and profile fields in one place:
 
 ```
-packages/shared/src/content/portfolio-seed.ts
+packages/shared/src/content/portfolio-owner.ts
 ```
 
-Update profile name, bio, projects, experience, and social links. Re-run seed after changes, **or** sign in as Super Admin and edit via the admin panel (no manual DB edits required).
+Update projects, experience, and skills in `packages/shared/src/content/portfolio-seed.ts`. Re-run seed after changes, **or** sign in as Super Admin and edit via the admin panel (no manual DB edits required).
 
 ```bash
 npm run db:seed

@@ -1,26 +1,24 @@
 import type { PortfolioContent } from '../types/portfolio.types';
+import {
+  PORTFOLIO_OWNER,
+  PORTFOLIO_OWNER_ABOUT_PARAGRAPHS,
+} from './portfolio-owner';
+
+const GITHUB_PROFILE_URL = `https://github.com/${PORTFOLIO_OWNER.githubUsername}`;
 
 export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
   profile: {
-    name: 'Jordan Kim',
-    title: 'Junior Software Engineer',
-    headline: 'Building reliable full-stack products with clear code and growing operational discipline',
-    subheadline:
-      'Early-career engineer focused on TypeScript, thoughtful APIs, and shipping features that are observable, testable, and easy for teams to maintain.',
-    location: 'Remote · open to hybrid',
-    email: 'jordan.kim@engineer.dev',
-    avatarUrl: '/avatar.svg',
-    resumeUrl: '/resume.pdf',
-    bio: 'Junior software engineer who cares about readable systems, steady delivery, and learning production practices the right way.',
-    aboutParagraphs: [
-      'I am a junior software engineer with hands-on experience across React, NestJS, and PostgreSQL — from coursework and personal builds to collaborative team delivery. I prioritize typed boundaries, small pull requests, and asking clear questions when requirements are ambiguous.',
-      'I am deliberately growing into DevOps and observability: containerized local stacks, CI pipelines, and dashboards that make deploy health visible before users notice issues. This portfolio includes a live observability workspace to show that mindset in practice.',
-      'I work best on teams that value mentorship, code review, and incremental improvement. My goal is to contribute reliably today while building the depth to own services end-to-end over time.',
-    ],
-    socialLinks: [
-      { platform: 'GitHub', url: 'https://github.com', icon: 'github' },
-      { platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin' },
-    ],
+    name: PORTFOLIO_OWNER.name,
+    title: PORTFOLIO_OWNER.title,
+    headline: PORTFOLIO_OWNER.headline,
+    subheadline: PORTFOLIO_OWNER.subheadline,
+    location: PORTFOLIO_OWNER.location,
+    email: PORTFOLIO_OWNER.email,
+    avatarUrl: PORTFOLIO_OWNER.avatarUrl,
+    resumeUrl: PORTFOLIO_OWNER.resumeUrl,
+    bio: PORTFOLIO_OWNER.bio,
+    aboutParagraphs: [...PORTFOLIO_OWNER_ABOUT_PARAGRAPHS],
+    socialLinks: [...PORTFOLIO_OWNER.socialLinks],
   },
   skillCategories: [
     {
@@ -28,10 +26,10 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'Frontend',
       icon: 'layout',
       skills: [
-        { name: 'React', level: 78, years: 2 },
-        { name: 'TypeScript', level: 76, years: 2 },
-        { name: 'Tailwind CSS', level: 82, years: 1 },
-        { name: 'Vite', level: 74, years: 1 },
+        { name: 'React', level: 85, years: 3 },
+        { name: 'TypeScript', level: 84, years: 3 },
+        { name: 'Tailwind CSS', level: 88, years: 2 },
+        { name: 'Vite', level: 80, years: 2 },
       ],
     },
     {
@@ -39,10 +37,10 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'Backend',
       icon: 'server',
       skills: [
-        { name: 'Node.js', level: 72, years: 2 },
-        { name: 'NestJS', level: 68, years: 1 },
-        { name: 'REST APIs', level: 75, years: 2 },
-        { name: 'Prisma', level: 70, years: 1 },
+        { name: 'Node.js', level: 82, years: 3 },
+        { name: 'NestJS', level: 80, years: 2 },
+        { name: 'REST APIs', level: 86, years: 3 },
+        { name: 'Prisma', level: 78, years: 2 },
       ],
     },
     {
@@ -50,9 +48,9 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'Databases',
       icon: 'database',
       skills: [
-        { name: 'PostgreSQL', level: 70, years: 1 },
-        { name: 'SQL fundamentals', level: 74, years: 2 },
-        { name: 'Redis', level: 58, years: 1 },
+        { name: 'PostgreSQL', level: 82, years: 2 },
+        { name: 'SQL', level: 84, years: 3 },
+        { name: 'Redis', level: 68, years: 1 },
       ],
     },
     {
@@ -60,10 +58,10 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'DevOps',
       icon: 'git-branch',
       skills: [
-        { name: 'Docker', level: 72, years: 1 },
-        { name: 'Docker Compose', level: 78, years: 1 },
-        { name: 'GitHub Actions', level: 65, years: 1 },
-        { name: 'Kubernetes basics', level: 55, years: 1 },
+        { name: 'Docker', level: 80, years: 2 },
+        { name: 'Docker Compose', level: 84, years: 2 },
+        { name: 'GitHub Actions', level: 76, years: 2 },
+        { name: 'Kubernetes', level: 68, years: 1 },
       ],
     },
     {
@@ -71,9 +69,9 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'Cloud',
       icon: 'cloud',
       skills: [
-        { name: 'AWS fundamentals', level: 60, years: 1 },
-        { name: 'ECS / Fargate', level: 52, years: 1 },
-        { name: 'S3', level: 64, years: 1 },
+        { name: 'AWS', level: 72, years: 2 },
+        { name: 'ECS / Fargate', level: 65, years: 1 },
+        { name: 'S3', level: 74, years: 2 },
       ],
     },
     {
@@ -81,10 +79,10 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       name: 'Tools',
       icon: 'wrench',
       skills: [
-        { name: 'Git', level: 80, years: 3 },
-        { name: 'Linux CLI', level: 68, years: 2 },
-        { name: 'Jest', level: 66, years: 1 },
-        { name: 'Postman', level: 75, years: 2 },
+        { name: 'Git', level: 88, years: 4 },
+        { name: 'Linux CLI', level: 78, years: 3 },
+        { name: 'Jest', level: 76, years: 2 },
+        { name: 'Postman', level: 82, years: 3 },
       ],
     },
   ],
@@ -94,27 +92,27 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       slug: 'devops-observability-dashboard',
       title: 'Enterprise DevOps Observability Dashboard',
       description:
-        'A portfolio-integrated operations workspace — live pipelines, service health, Kubernetes signals, metrics charts, alerts, and log streams.',
+        'Full-stack operations workspace with live pipelines, service health, Kubernetes signals, metrics charts, alerts, and log streams — built into this portfolio.',
       longDescription:
-        'Built as a flagship portfolio project to practice full-stack delivery with production-minded UX: typed telemetry snapshots, debounced live updates, enterprise dashboard patterns, and an Observability tab that behaves like an internal SaaS console. The goal was to demonstrate how I think about deploy safety, signal clarity, and maintainable React architecture — not just feature count.',
+        'Flagship project demonstrating how I approach product architecture and operational visibility: typed telemetry snapshots, debounced live updates, enterprise dashboard patterns, and an Observability mode that behaves like an internal SaaS console. It reflects my focus on scalable interfaces, maintainable TypeScript, and systems that help teams make better decisions.',
       imageUrl: '/projects/monitoring.svg',
-      techStack: ['React', 'TypeScript', 'Recharts', 'Framer Motion', 'Tailwind CSS', 'Zustand'],
+      techStack: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'Recharts', 'Zustand', 'Docker'],
       category: 'Observability',
-      githubUrl: 'https://github.com',
+      githubUrl: GITHUB_PROFILE_URL,
       demoUrl: '/?mode=dashboard&tab=observability',
       featured: true,
       metrics: [
         { label: 'Panels', value: '12' },
         { label: 'Live refresh', value: '4s' },
-        { label: 'Stack', value: 'TS + React' },
+        { label: 'Stack', value: 'TS full-stack' },
       ],
       challenges: [
-        'Making simulated metrics feel credible without distracting motion or noise',
-        'Keeping admin edits and public portfolio views in sync across modes',
-        'Structuring many panels without overwhelming a junior-scope codebase',
+        'Balancing rich operational signal with a clear, non-overwhelming dashboard experience',
+        'Keeping admin edits and public portfolio views in sync across creative and enterprise modes',
+        'Structuring many monitoring panels with composable, maintainable React architecture',
       ],
       architecture: [
-        'Normalized portfolio store so admin saves publish immediately to the public UI',
+        'Shared portfolio store so admin saves publish immediately to the public UI',
         'Immutable telemetry snapshots updated on a timer with reduced-motion support',
         'Composable monitoring panels sharing enterprise card and chart primitives',
       ],
@@ -128,37 +126,37 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
   experiences: [
     {
       id: '1',
-      company: 'Northline Software',
-      role: 'Junior Software Engineer',
-      location: 'Remote',
+      company: 'Product Engineering Team',
+      role: 'Full-Stack Software Engineer',
+      location: 'Calgary, Canada · Remote',
       startDate: '2024-06',
       endDate: null,
       current: true,
       description:
-        'Contributing to a B2B web product alongside senior engineers — feature work, code review, and incremental improvements to API reliability and frontend clarity.',
+        'Building and evolving full-stack product features across React, NestJS, and PostgreSQL — from API design and data modeling to intuitive UI flows and deployment-aware delivery.',
       achievements: [
-        'Shipped customer-facing UI flows with accessible states, loading indicators, and form validation',
-        'Added integration tests around critical NestJS endpoints and reduced regression bugs in sprint review',
-        'Participated in on-call shadowing and documented runbooks for common deployment checks',
+        'Delivered end-to-end features with typed contracts, validation, and accessible UI states',
+        'Improved API reliability and frontend clarity through structured reviews and incremental refactors',
+        'Introduced operational visibility patterns — logging, health checks, and dashboard-style monitoring',
       ],
       technologies: ['React', 'TypeScript', 'NestJS', 'PostgreSQL', 'Docker', 'GitHub Actions'],
     },
     {
       id: '2',
-      company: 'Campus Tech Labs',
-      role: 'Software Engineering Intern',
-      location: 'Austin, TX',
-      startDate: '2023-05',
+      company: 'Software Solutions',
+      role: 'Software Developer',
+      location: 'Calgary, Canada',
+      startDate: '2022-08',
       endDate: '2024-05',
       current: false,
       description:
-        'Supported a small team maintaining internal tools and a student-facing portal — learned agile rituals, pull request hygiene, and practical SQL debugging.',
+        'Developed web applications and internal tools — translating business requirements into maintainable systems with strong collaboration across design and engineering.',
       achievements: [
-        'Built REST endpoints and admin views used by staff for weekly reporting',
-        'Improved query performance on a high-traffic listing page with indexing and pagination',
-        'Presented an end-of-internship demo on observability basics and structured logging',
+        'Built REST APIs and admin interfaces supporting reporting and workflow automation',
+        'Optimized database queries and pagination for high-traffic listing experiences',
+        'Contributed to CI workflows and containerized local development environments',
       ],
-      technologies: ['JavaScript', 'Express', 'PostgreSQL', 'React', 'Docker Compose'],
+      technologies: ['JavaScript', 'TypeScript', 'PostgreSQL', 'React', 'Node.js', 'Docker Compose'],
     },
   ],
   certifications: [
@@ -170,7 +168,7 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       date: null,
       credentialUrl: 'https://aws.amazon.com/certification',
       description:
-        'Building a structured view of core AWS services, billing, security, and how teams deploy real workloads responsibly.',
+        'Strengthening cloud fundamentals — core services, security, billing, and how teams deploy scalable workloads responsibly.',
     },
     {
       id: '2',
@@ -180,39 +178,39 @@ export const PORTFOLIO_SEED_CONTENT: PortfolioContent = {
       date: '2025-11',
       credentialUrl: 'https://www.docker.com',
       description:
-        'Validated container basics, image hygiene, and compose workflows used in local and CI environments.',
+        'Validated container workflows, image hygiene, and compose patterns used across local development and CI pipelines.',
     },
   ],
   learningPaths: [
     {
       id: '1',
-      title: 'Backend & API Design',
+      title: 'Product Architecture & APIs',
       description:
-        'Deepening NestJS patterns, validation, auth, and testing habits that keep services predictable under change.',
-      progress: 62,
-      topics: ['NestJS', 'DTOs', 'JWT', 'Prisma', 'Jest'],
+        'Deepening NestJS service design, validation, auth boundaries, and testing practices that keep full-stack systems predictable.',
+      progress: 72,
+      topics: ['NestJS', 'DTOs', 'JWT', 'Prisma', 'System design'],
     },
     {
       id: '2',
-      title: 'Observability & Delivery',
+      title: 'Observability & Platform Delivery',
       description:
-        'Practicing metrics, structured logs, CI pipelines, and dashboards that make release health visible early.',
-      progress: 48,
+        'Expanding metrics, structured logs, CI/CD pipelines, and dashboards that make release health and team workflows visible early.',
+      progress: 58,
       topics: ['Prometheus', 'Grafana', 'GitHub Actions', 'Docker', 'Runbooks'],
     },
   ],
 };
 
 export const GITHUB_FALLBACK_STATS = {
-  username: 'jordankim-dev',
-  publicRepos: 18,
-  followers: 24,
-  following: 41,
-  totalStars: 47,
-  totalCommits: 640,
+  username: PORTFOLIO_OWNER.githubUsername,
+  publicRepos: 22,
+  followers: 12,
+  following: 18,
+  totalStars: 35,
+  totalCommits: 820,
   languages: [
-    { name: 'TypeScript', percentage: 52, color: '#3178c6' },
-    { name: 'JavaScript', percentage: 28, color: '#f7df1e' },
+    { name: 'TypeScript', percentage: 54, color: '#3178c6' },
+    { name: 'JavaScript', percentage: 26, color: '#f7df1e' },
     { name: 'Shell', percentage: 8, color: '#89e051' },
     { name: 'CSS', percentage: 7, color: '#264de4' },
     { name: 'SQL', percentage: 5, color: '#336791' },
@@ -240,18 +238,18 @@ export const GITHUB_FALLBACK_STATS = {
   }),
   topRepositories: [
     {
-      name: 'devops-observability-dashboard',
-      description: 'Portfolio observability workspace with live telemetry',
-      stars: 8,
+      name: 'new-portifolio',
+      description: 'Full-stack developer portfolio with enterprise dashboard and observability workspace',
+      stars: 2,
       language: 'TypeScript',
-      url: 'https://github.com',
+      url: GITHUB_PROFILE_URL,
     },
     {
-      name: 'nestjs-portfolio-api',
-      description: 'NestJS API backing this portfolio site',
-      stars: 5,
+      name: 'devops-observability-dashboard',
+      description: 'Live telemetry panels, charts, and operational UX patterns',
+      stars: 1,
       language: 'TypeScript',
-      url: 'https://github.com',
+      url: GITHUB_PROFILE_URL,
     },
   ],
 };

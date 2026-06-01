@@ -1,7 +1,16 @@
+import { PORTFOLIO_OWNER } from '@portfolio/shared';
 import { ArrowUp, Github, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 const CURRENT_YEAR = new Date().getFullYear();
+
+const GITHUB_LINK =
+  PORTFOLIO_OWNER.socialLinks.find((link) => link.icon === 'github')?.url ??
+  `https://github.com/${PORTFOLIO_OWNER.githubUsername}`;
+
+const LINKEDIN_LINK =
+  PORTFOLIO_OWNER.socialLinks.find((link) => link.icon === 'linkedin')?.url ??
+  'https://linkedin.com';
 
 export function Footer(): React.JSX.Element {
   const scrollToTop = (): void => {
@@ -13,7 +22,8 @@ export function Footer(): React.JSX.Element {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:flex-row sm:px-6">
         <div className="text-center sm:text-left">
           <p className="font-mono text-sm font-semibold text-foreground">
-            Alex Rivera<span className="text-accent">.</span>
+            {PORTFOLIO_OWNER.name}
+            <span className="text-accent">.</span>
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             © {CURRENT_YEAR} — Built with React, NestJS & PostgreSQL
@@ -22,7 +32,7 @@ export function Footer(): React.JSX.Element {
 
         <div className="flex items-center gap-3">
           <a
-            href="https://github.com"
+            href={GITHUB_LINK}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub profile"
@@ -31,7 +41,7 @@ export function Footer(): React.JSX.Element {
             <Github className="h-4 w-4" />
           </a>
           <a
-            href="https://linkedin.com"
+            href={LINKEDIN_LINK}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn profile"

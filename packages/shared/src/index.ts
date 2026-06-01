@@ -4,4 +4,5 @@ export * from './types/contact.types';
 export * from './types/api.types';
 export * from './types/auth.types';
 export * from './types/admin.types';
+export * from './content/portfolio-owner';
 export * from './content/portfolio-seed';

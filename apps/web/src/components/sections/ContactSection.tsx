@@ -58,7 +58,7 @@ export function ContactSection({ profile }: ContactSectionProps): React.JSX.Elem
         <SectionHeading
           label="Contact"
           title="Bring me the messy problem"
-          description="Open to junior and early-career roles where I can learn from strong mentors while contributing to real product delivery."
+          description="Open to full-stack engineering roles in Calgary, remote, or hybrid — especially teams building scalable products with strong architecture and operational discipline."
           align="center"
         />
 
@@ -67,14 +67,15 @@ export function ContactSection({ profile }: ContactSectionProps): React.JSX.Elem
             <div className="aurora-card glass rounded-[2rem] p-6">
               <h3 className="text-lg font-semibold">Best-fit conversations</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                I am looking for teams that value clear communication, code review, and steady
-                improvement — full-stack features, API work, and growing DevOps exposure.
+                I am looking for teams that value clear communication, thoughtful product design,
+                and systems that scale — full-stack delivery, API architecture, and operational
+                visibility.
               </p>
               <div className="mt-5 space-y-2">
                 {[
-                  'Junior full-stack engineering',
-                  'Backend APIs with TypeScript',
-                  'Observability-minded delivery',
+                  'Full-stack product engineering',
+                  'TypeScript APIs & system design',
+                  'Observability & internal tooling',
                 ].map((item) => (
                   <div
                     key={item}

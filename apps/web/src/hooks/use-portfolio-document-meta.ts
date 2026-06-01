@@ -1,8 +1,8 @@
 import type { PortfolioContent } from '@portfolio/shared';
+import { PORTFOLIO_HTML_META } from '@portfolio/shared';
 import { useEffect } from 'react';
 
-const DEFAULT_DESCRIPTION =
-  'Junior software engineer portfolio — full-stack delivery, thoughtful system design, and growing DevOps practice.';
+const DEFAULT_DESCRIPTION = PORTFOLIO_HTML_META.ogDescription;
 
 export function usePortfolioDocumentMeta(content: PortfolioContent | null): void {
   useEffect(() => {
